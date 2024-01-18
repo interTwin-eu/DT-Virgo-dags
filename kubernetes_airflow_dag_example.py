@@ -42,7 +42,8 @@ except ImportError:
         "Could not import DAGs in example_local_kubernetes_executor.py", exc_info=True
     )
     log.warning(
-        "Install Kubernetes dependencies with: pip install apache-airflow[cncf.kubernetes]"
+        "Install Kubernetes dependencies with: \
+         pip install apache-airflow[cncf.kubernetes]"
     )
     k8s = None
 
