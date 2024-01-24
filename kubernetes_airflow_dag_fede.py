@@ -101,4 +101,4 @@ if k8s:
         #        DEFINE TASK ORDER
         ###########################
                 
-        task_with_docker(thisdict) #>> task_with_local() >> task_with_executor()
+        task_with_docker() #>> task_with_local() >> task_with_executor()
