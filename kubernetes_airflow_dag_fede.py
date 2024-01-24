@@ -65,6 +65,12 @@ if k8s:
             )
         }
 
+        ###########################
+        #        DEFINE TASKS
+        ###########################
+ 
+        # Task with k8s executor
+        
         @task(
             executor_config=start_task_executor_config,
             queue="kubernetes",
@@ -74,6 +80,8 @@ if k8s:
             print_stuff()
             return "Done with task_with_kubernetes_executor"
 
+        # Task with local executor
+        
         @task(task_id="task_with_local_executor")
         def task_with_local(ds=None, **kwargs):
             """Print the Airflow context and ds variable from the context."""
@@ -81,5 +89,28 @@ if k8s:
             print(ds)
             return "Done with task_with_local_executor"
 
-        #define task order
-        task_with_local() >> task_with_executor()
+        # Task with docker image
+
+        @task.docker(image="python:3.9-slim-bookworm", multiple_outputs=True)
+        def task_with_docker(order_data_dict: dict):
+            """#### Transform task
+            A simple Transform task which takes in the collection of order data and computes the total order value.
+            """
+            total_order_value = 0
+
+            for value in order_data_dict.values():
+                total_order_value += value
+
+            return {"total_order_value": total_order_value}
+
+        ###########################
+        #        DEFINE TASK ORDER
+        ###########################
+        
+        thisdict =	{
+            "brand": 1,
+            "model": 2,
+            "year": 3
+        }
+        
+        task_with_docker(thisdict) >> task_with_local() >> task_with_executor()
