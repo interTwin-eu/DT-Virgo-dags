@@ -39,7 +39,7 @@ try:
     from kubernetes.client import models as k8s
 except ImportError:
     log.warning(
-        "Could not import DAGs in example_local_kubernetes_executor.py", exc_info=True
+        "Could not import DAGs in fede_local_kubernetes_executor.py", exc_info=True
     )
     log.warning(
         "Install Kubernetes dependencies with: \
@@ -70,7 +70,7 @@ if k8s:
             queue="kubernetes",
             task_id="task_with_kubernetes_executor",
         )
-        def task_with_template():
+        def task_with_executor():
             print_stuff()
             return "Done with task_with_kubernetes_executor"
 
@@ -81,4 +81,5 @@ if k8s:
             print(ds)
             return "Done with task_with_local_executor"
 
-        task_with_local() >> task_with_template()
+        #define task order
+        task_with_local() >> task_with_executor()
