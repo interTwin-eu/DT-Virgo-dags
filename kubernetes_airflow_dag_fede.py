@@ -72,12 +72,13 @@ if k8s:
         )
         def task_with_template():
             print_stuff()
+            return "Done with task_with_kubernetes_executor"
 
         @task(task_id="task_with_local_executor")
         def task_with_local(ds=None, **kwargs):
             """Print the Airflow context and ds variable from the context."""
             print(kwargs)
             print(ds)
-            return "Whatever you return gets printed in the logs"
+            return "Done with task_with_local_executor"
 
         task_with_local() >> task_with_template()
