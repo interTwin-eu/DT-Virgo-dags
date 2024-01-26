@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import logging
 import os
+from pathlib import Path
 
 import pendulum
 from airflow.configuration import conf
@@ -93,6 +94,12 @@ if k8s:
             """
             Tests whether the volume has been mounted.
             """
+
+            foo_dir = Path("/foo")
+            if foo_dir.exists():
+                log.info("Can open /foo/")
+            else:
+                log.error("Cannot open /foo/")
 
             try:
                 with open("/foo/volume_mount_test.txt", "w+") as foo:
