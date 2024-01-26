@@ -98,9 +98,8 @@ if k8s:
                 with open("/foo/volume_mount_test.txt", "w+") as foo:
                     foo.write("Hello")
             except Exception:
-                log.error(
-                    "Cannot open file /foo/volume_mount_test.txt"
-            )
+                log.error("Cannot open file /foo/volume_mount_test.txt")
+
             return_code = os.system("cat /foo/volume_mount_test.txt")
             if return_code != 0:
                 raise ValueError(
