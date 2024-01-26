@@ -15,7 +15,6 @@ import logging
 import os
 
 import pendulum
-
 from airflow.configuration import conf
 from airflow.decorators import task
 from airflow.example_dags.libs.helper import print_stuff
@@ -206,10 +205,10 @@ if k8s:
         # Define config for task: pod with image
         #############################################################
 
-        worker_container_repository = conf.get(
+        repository = conf.get(
             "kubernetes_executor", "worker_container_repository"
         )
-        worker_container_tag = conf.get("kubernetes_executor", "worker_container_tag")
+        tag = conf.get("kubernetes_executor", "worker_container_tag")
 
         kube_exec_config_image = {
             "pod_override": k8s.V1Pod(
@@ -217,7 +216,7 @@ if k8s:
                     containers=[
                         k8s.V1Container(
                             name="base",
-                            image=f"{worker_container_repository}:{worker_container_tag}",
+                            image=f"{repository}:{tag}",
                         ),
                     ]
                 )
