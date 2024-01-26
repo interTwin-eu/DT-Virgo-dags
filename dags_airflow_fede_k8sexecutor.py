@@ -54,7 +54,11 @@ if k8s:
         #############################################################
         # 1) task with pod annotation
         #############################################################
-        @task(executor_config=executor_config_annotation)
+        @task(
+            executor_config=executor_config_annotation,
+            queue="kubernetes",
+            task_id="task_k8s_annotation",
+        )
         def test_annotation():
             print_stuff()
 
@@ -89,7 +93,11 @@ if k8s:
         ###########################################################
         # 2) task with mount volume
         ###########################################################
-        @task(executor_config=executor_config_volume_mount)
+        @task(
+            executor_config=executor_config_volume_mount,
+            queue="kubernetes",
+            task_id="task_k8s_volume_mount",
+        )
         def test_volume_mount():
             """
             Tests whether the volume has been mounted.
@@ -155,7 +163,11 @@ if k8s:
         ###########################################################
         # 3) pod with sidecar and shared volumes
         ###########################################################
-        @task(executor_config=executor_config_sidecar)
+        @task(
+            executor_config=executor_config_sidecar,
+            queue="kubernetes",
+            task_id="task_k8s_sidecar",
+        )
         def test_sharedvolume_mount():
             """
             Tests whether the volume has been mounted.
@@ -185,7 +197,11 @@ if k8s:
         #############################################################
         # 4) pod with label
         #############################################################
-        @task(executor_config=executor_config_label)
+        @task(
+            executor_config=executor_config_label,
+            queue="kubernetes",
+            task_id="task_k8s_label",
+        )
         def test_label():
             print_stuff()
 
@@ -205,7 +221,11 @@ if k8s:
         #############################################################
         # 5) pod with other namespace
         #############################################################
-        @task(executor_config=executor_config_other_ns)
+        @task(
+            executor_config=executor_config_other_ns,
+            queue="kubernetes",
+            task_id="task_k8s_other_ns",
+        )
         def other_namespace_task():
             print_stuff()
 
@@ -235,7 +255,11 @@ if k8s:
         #############################################################
         # 6) pod with image
         #############################################################
-        @task(executor_config=kube_exec_config_image)
+        @task(
+            executor_config=executor_config_image,
+            queue="kubernetes",
+            task_id="task_k8s_image",
+        )
         def image_override_task():
             print_stuff()
 
@@ -291,7 +315,11 @@ if k8s:
         #############################################################
         # 7) pod with resource limits
         #############################################################
-        @task(executor_config=kube_exec_config_resource_limits)
+        @task(
+            executor_config=executor_config_resource_limits,
+            queue="kubernetes",
+            task_id="task_k8s_resource_limits",
+        )
         def task_with_resource_limits():
             print_stuff()
 
