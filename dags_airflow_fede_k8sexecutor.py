@@ -1,8 +1,8 @@
 """
-This is an example dag for using a Kubernetes Executor Configuration. 
+This is an example dag for using a Kubernetes Executor Configuration.
 It starts the following tasks:
 1) pod with annotation
-2) pod with mounted volume 
+2) pod with mounted volume
 3) pod with sidecar and shared volume
 4) pod with label
 5) pod with other namespace
