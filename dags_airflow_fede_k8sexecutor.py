@@ -97,7 +97,7 @@ if k8s:
             try:
                 with open("/foo/volume_mount_test.txt", "w+") as foo:
                     foo.write("Hello")
-            except:
+            except Exception:
                 log.error(
                     "Cannot open file /foo/volume_mount_test.txt"
             )
@@ -296,7 +296,8 @@ if k8s:
         #############################################################
         (
             annotation_task # first execute this
-            >> [volume_task, other_ns_task, sidecar_task] # then these three
+            >> [other_ns_task, sidecar_task] # then these 
             >> label_task # then this
             >> [image_task, resource_task] # then the last two
+            >> volume_task
         )
