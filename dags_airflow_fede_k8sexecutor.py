@@ -135,7 +135,7 @@ if k8s:
                     volumes=[
                         k8s.V1Volume(
                             name="shared-empty-dir", 
-                            empty_dir=k8s.V1EmptyDirVolumeSource()
+                            empty_dir=k8s.V1EmptyDirVolumeSource(),
                         ),
                     ],
                 )
@@ -171,7 +171,7 @@ if k8s:
                 metadata=k8s.V1ObjectMeta(labels={"release": "stable"})
             )
         }
-        
+
         #############################################################
         # 4) pod with label
         #############################################################
@@ -204,7 +204,7 @@ if k8s:
         #############################################################
         # Define config for task: pod with image
         #############################################################
-        
+
         worker_container_repository = conf.get(
             "kubernetes_executor", "worker_container_repository"
         )
@@ -220,7 +220,7 @@ if k8s:
                     containers=[
                         k8s.V1Container(
                             name="base",
-                            image=f"{worker_container_repository}:{worker_container_tag}"
+                            image=f"{worker_container_repository}:{worker_container_tag}",
                         ),
                     ]
                 )
