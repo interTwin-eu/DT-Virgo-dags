@@ -202,9 +202,10 @@ if k8s:
         other_ns_task = other_namespace_task()
 
         #############################################################
-        # Define config for task: pod with image 
+        # Define config for task: pod with image
         #############################################################
 
+        # use image from worker node as example
         repo = conf.get("kubernetes_executor", "worker_container_repository")
         tag = conf.get("kubernetes_executor", "worker_container_tag")
 
