@@ -69,14 +69,19 @@ if k8s:
                         k8s.V1Container(
                             name="base",
                             volume_mounts=[
-                                k8s.V1VolumeMount(mount_path="/foo/", name="test-volume")
+                                k8s.V1VolumeMount(
+                                    mount_path="/foo/", 
+                                    name="test-volume"
+                                )
                             ],
                         )
                     ],
                     volumes=[
                         k8s.V1Volume(
                             name="test-volume",
-                            host_path=k8s.V1HostPathVolumeSource(path="/tmp/"),
+                            host_path=k8s.V1HostPathVolumeSource(
+                                path="/tmp/"
+                            ),
                         )
                     ],
                 )
@@ -97,7 +102,9 @@ if k8s:
 
             return_code = os.system("cat /foo/volume_mount_test.txt")
             if return_code != 0:
-                raise ValueError(f"Error when checking volume mount. Return code {return_code}")
+                raise ValueError(
+                    f"Error when checking volume mount. Return code {return_code}"
+                )
 
         volume_task = test_volume_mount()
 
