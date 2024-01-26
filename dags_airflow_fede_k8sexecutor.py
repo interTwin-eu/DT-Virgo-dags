@@ -295,7 +295,7 @@ if k8s:
         #############################################################
         (
             annotation_task  # first execute this
-            >> [other_ns_task, sidecar_task]  # then these 
+            >> [other_ns_task, sidecar_task]  # then these
             >> label_task  # then this
             >> [image_task, resource_task]  # then the last two
             >> volume_task
