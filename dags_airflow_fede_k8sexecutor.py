@@ -13,7 +13,7 @@ from airflow.decorators import task
 from airflow.example_dags.libs.helper import print_stuff
 from airflow.models.dag import DAG
 
-[docs]log = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 
 try:
     from kubernetes.client import models as k8s
@@ -22,7 +22,7 @@ except ImportError:
         "The example_kubernetes_executor example DAG requires the kubernetes provider."
         " Please install it with: pip install apache-airflow[cncf.kubernetes]"
     )
-[docs]    k8s = None
+    k8s = None
 
 
 if k8s:
@@ -34,7 +34,7 @@ if k8s:
         tags=["example3"],
     ) as dag:
         # You can use annotations on your kubernetes pods!
-[docs]        start_task_executor_config = {
+        start_task_executor_config = {
             "pod_override": k8s.V1Pod(metadata=k8s.V1ObjectMeta(annotations={"test": "annotation"}))
         }
 
