@@ -256,7 +256,7 @@ if k8s:
         # 6) pod with image
         #############################################################
         @task(
-            executor_config=executor_config_image,
+            executor_config=kube_exec_config_image,
             queue="kubernetes",
             task_id="task_k8s_image",
         )
@@ -316,7 +316,7 @@ if k8s:
         # 7) pod with resource limits
         #############################################################
         @task(
-            executor_config=executor_config_resource_limits,
+            executor_config=kube_exec_config_resource_limits,
             queue="kubernetes",
             task_id="task_k8s_resource_limits",
         )
