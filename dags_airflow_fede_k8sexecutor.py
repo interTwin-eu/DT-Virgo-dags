@@ -134,7 +134,7 @@ if k8s:
                     ],
                     volumes=[
                         k8s.V1Volume(
-                            name="shared-empty-dir", 
+                            name="shared-empty-dir",
                             empty_dir=k8s.V1EmptyDirVolumeSource(),
                         ),
                     ],
@@ -202,12 +202,10 @@ if k8s:
         other_ns_task = other_namespace_task()
 
         #############################################################
-        # Define config for task: pod with image
+        # Define config for task: pod with image 
         #############################################################
 
-        repository = conf.get(
-            "kubernetes_executor", "worker_container_repository"
-        )
+        repo = conf.get("kubernetes_executor", "worker_container_repository")
         tag = conf.get("kubernetes_executor", "worker_container_tag")
 
         kube_exec_config_image = {
@@ -216,7 +214,7 @@ if k8s:
                     containers=[
                         k8s.V1Container(
                             name="base",
-                            image=f"{repository}:{tag}",
+                            image=f"{repo}:{tag}",
                         ),
                     ]
                 )
