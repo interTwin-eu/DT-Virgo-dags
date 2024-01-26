@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import logging
 import os
+
 import pendulum
 
 from airflow.configuration import conf
@@ -152,10 +153,10 @@ if k8s:
             """
             for i in range(5):
                 try:
-                    return_code = os.system("cat /shared/test.txt")
-                    if return_code != 0:
+                    exit_code = os.system("cat /shared/test.txt")
+                    if exit_code != 0:
                         raise ValueError(
-                            f"Error when checking volume mount. Return code {return_code}"
+                            f"Error when checking volume mount. Exit code {exit_code}"
                         )
                 except ValueError as e:
                     if i > 4:
@@ -210,10 +211,6 @@ if k8s:
         )
         worker_container_tag = conf.get("kubernetes_executor", "worker_container_tag")
 
-        # You can also change the base image, here we used the worker image for demonstration.
-        # Note that the image must have the same configuration as the worker image. 
-        # Could be that you want to run this task in a special docker image that has a zip
-        # library built-in. You build the special docker image on top your worker image.
         kube_exec_config_image = {
             "pod_override": k8s.V1Pod(
                 spec=k8s.V1PodSpec(
