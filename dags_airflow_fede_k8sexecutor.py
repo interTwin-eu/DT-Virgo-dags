@@ -94,9 +94,13 @@ if k8s:
             Tests whether the volume has been mounted.
             """
 
-            with open("/foo/volume_mount_test.txt", "w") as foo:
-                foo.write("Hello")
-
+            try:
+                with open("/foo/volume_mount_test.txt", "w+") as foo:
+                    foo.write("Hello")
+            except:
+                log.error(
+                    "Cannot open file /foo/volume_mount_test.txt"
+            )
             return_code = os.system("cat /foo/volume_mount_test.txt")
             if return_code != 0:
                 raise ValueError(
@@ -291,8 +295,8 @@ if k8s:
         # Define DAG execution
         #############################################################
         (
-            annotation_task
-            >> [volume_task, other_ns_task, sidecar_task]
-            >> label_task
-            >> [image_task, resource_task]
+            annotation_task # first execute this
+            >> [volume_task, other_ns_task, sidecar_task] # then these three
+            >> label_task # then this
+            >> [image_task, resource_task] # then the last two
         )
