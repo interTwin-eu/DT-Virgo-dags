@@ -1,5 +1,5 @@
 """
-This is an example dag for using a Kubernetes Executor Configuration.
+This is an example dag for using the default queue.
 It starts the following tasks:
 1) pod with annotation
 2) pod with mounted volume
@@ -37,7 +37,7 @@ default_queue = "default"
 
 if k8s:
     with DAG(
-        dag_id="kubernetes_executor",
+        dag_id="default_queue_executor",
         schedule=None,
         start_date=pendulum.datetime(2021, 1, 1, tz="UTC"),
         catchup=False,
