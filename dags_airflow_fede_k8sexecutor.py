@@ -59,7 +59,7 @@ if k8s:
         @task(
             executor_config=executor_config_annotation,
             queue=default_queue,
-            task_id="task_k8s_annotation",
+            task_id="task_annotation",
         )
         def test_annotation():
             print_stuff()
@@ -98,7 +98,7 @@ if k8s:
         @task(
             executor_config=executor_config_volume_mount,
             queue=default_queue,
-            task_id="task_k8s_volume_mount",
+            task_id="task_volume_mount",
         )
         def test_volume_mount():
             """
@@ -168,7 +168,7 @@ if k8s:
         @task(
             executor_config=executor_config_sidecar,
             queue=default_queue,
-            task_id="task_k8s_sidecar",
+            task_id="task_sidecar",
         )
         def test_sharedvolume_mount():
             """
@@ -202,7 +202,7 @@ if k8s:
         @task(
             executor_config=executor_config_label,
             queue=default_queue,
-            task_id="task_k8s_label",
+            task_id="task_label",
         )
         def test_label():
             print_stuff()
@@ -226,7 +226,7 @@ if k8s:
         @task(
             executor_config=executor_config_other_ns,
             queue=default_queue,
-            task_id="task_k8s_other_ns",
+            task_id="task_other_ns",
         )
         def other_namespace_task():
             print_stuff()
@@ -260,7 +260,7 @@ if k8s:
         @task(
             executor_config=kube_exec_config_image,
             queue=default_queue,
-            task_id="task_k8s_image",
+            task_id="task_image",
         )
         def image_override_task():
             print_stuff()
@@ -320,7 +320,7 @@ if k8s:
         @task(
             executor_config=kube_exec_config_resource_limits,
             queue=default_queue,
-            task_id="task_k8s_resource_limits",
+            task_id="task_resource_limits",
         )
         def task_with_resource_limits():
             print_stuff()
