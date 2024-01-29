@@ -69,8 +69,8 @@ if k8s:
         #############################################################
         # Define config for task with volume, mount host /tmp/ to /foo/
         #############################################################
-        directory = os.getcwd().replace('\\', '/')   # "/tmp/"
-        print(directory)
+        directory = os.getcwd().replace("\\", "/")  # "/tmp/"
+
         executor_config_volume_mount = {
             "pod_override": k8s.V1Pod(
                 spec=k8s.V1PodSpec(
@@ -107,8 +107,8 @@ if k8s:
             Tests whether the volume has been mounted.
             """
 
-            log.info("Path on host "+directory)
-            foo_dir = Path("/foo")
+            log.info("Path on host " + directory)
+            foo_dir = Path("/foo/")
             if foo_dir.exists():
                 log.info("Can open /foo/")
             else:
