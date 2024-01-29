@@ -33,6 +33,8 @@ except ImportError:
     )
     k8s = None
 
+default_queue = "kubernetes"
+
 if k8s:
     with DAG(
         dag_id="kubernetes_executor",
@@ -56,7 +58,7 @@ if k8s:
         #############################################################
         @task(
             executor_config=executor_config_annotation,
-            queue="kubernetes",
+            queue=default_queue,
             task_id="task_k8s_annotation",
         )
         def test_annotation():
@@ -95,7 +97,7 @@ if k8s:
         ###########################################################
         @task(
             executor_config=executor_config_volume_mount,
-            queue="kubernetes",
+            queue=default_queue,
             task_id="task_k8s_volume_mount",
         )
         def test_volume_mount():
@@ -165,7 +167,7 @@ if k8s:
         ###########################################################
         @task(
             executor_config=executor_config_sidecar,
-            queue="kubernetes",
+            queue=default_queue,
             task_id="task_k8s_sidecar",
         )
         def test_sharedvolume_mount():
@@ -199,7 +201,7 @@ if k8s:
         #############################################################
         @task(
             executor_config=executor_config_label,
-            queue="kubernetes",
+            queue=default_queue,
             task_id="task_k8s_label",
         )
         def test_label():
@@ -223,7 +225,7 @@ if k8s:
         #############################################################
         @task(
             executor_config=executor_config_other_ns,
-            queue="kubernetes",
+            queue=default_queue,
             task_id="task_k8s_other_ns",
         )
         def other_namespace_task():
@@ -257,7 +259,7 @@ if k8s:
         #############################################################
         @task(
             executor_config=kube_exec_config_image,
-            queue="kubernetes",
+            queue=default_queue,
             task_id="task_k8s_image",
         )
         def image_override_task():
@@ -317,7 +319,7 @@ if k8s:
         #############################################################
         @task(
             executor_config=kube_exec_config_resource_limits,
-            queue="kubernetes",
+            queue=default_queue,
             task_id="task_k8s_resource_limits",
         )
         def task_with_resource_limits():
