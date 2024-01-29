@@ -69,6 +69,8 @@ if k8s:
         #############################################################
         # Define config for task with volume, mount host /tmp/ to /foo/
         #############################################################
+        directory = os.getcwd().replace('\\', '/')
+        print(directory)
         executor_config_volume_mount = {
             "pod_override": k8s.V1Pod(
                 spec=k8s.V1PodSpec(
@@ -85,7 +87,7 @@ if k8s:
                     volumes=[
                         k8s.V1Volume(
                             name="test-volume",
-                            host_path=k8s.V1HostPathVolumeSource(path="/tmp/"),
+                            host_path=k8s.V1HostPathVolumeSource(path=directory),  # "/tmp/"
                         )
                     ],
                 )
