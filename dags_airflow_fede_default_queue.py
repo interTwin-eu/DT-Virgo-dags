@@ -374,7 +374,8 @@ if k8s:
         # Define DAG execution
         #############################################################
         (
-            [private_image_task, annotation_task]  # first execute this
+            private_image_task
+            >> annotation_task  # first execute this
             >> [other_ns_task, sidecar_task]  # then these
             >> label_task  # then this
             >> [image_task, resource_task]  # then the last two
