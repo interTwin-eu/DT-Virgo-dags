@@ -4,13 +4,14 @@ Create a pod that can access rucio endpoint at CNAF
 from __future__ import annotations
 
 import logging
-# import os
-# from pathlib import Path
 
 import pendulum
 # from airflow.configuration import conf
 from airflow.decorators import task
 from airflow.models.dag import DAG
+
+# import os
+# from pathlib import Path
 
 log = logging.getLogger(__name__)
 
