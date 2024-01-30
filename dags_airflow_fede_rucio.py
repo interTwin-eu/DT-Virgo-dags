@@ -11,6 +11,8 @@ import pendulum
 from airflow.decorators import task
 from airflow.models.dag import DAG
 
+import subprocess
+
 # import os
 # from pathlib import Path
 
