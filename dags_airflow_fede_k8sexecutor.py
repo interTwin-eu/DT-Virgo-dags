@@ -158,6 +158,7 @@ if k8s:
                             empty_dir=k8s.V1EmptyDirVolumeSource(),
                         ),
                     ],
+                    on_finish_action="delete_pod",
                 )
             ),
         }
@@ -249,7 +250,8 @@ if k8s:
                             name="base",
                             image=f"{repo}:{tag}",
                         ),
-                    ]
+                    ],
+                    on_finish_action="delete_pod",
                 )
             )
         }
@@ -308,6 +310,7 @@ if k8s:
                             resources=k8s_resource_requirements,
                         )
                     ],
+                    on_finish_action="delete_pod",
                     affinity=k8s_affinity,
                     tolerations=k8s_tolerations,
                 )
