@@ -351,7 +351,7 @@ if k8s:
                         k8s.V1LocalObjectReference(
                             name="dockerhub",
                         ),
-                    ]
+                    ],
                 )
             )
         }
@@ -369,12 +369,12 @@ if k8s:
             log.info("Using image " + f"{repo}:{tag}")
 
         private_image_task = private_image_task()
- 
+
         #############################################################
         # Define DAG execution
         #############################################################
         (
-            annotation_task  # first execute this
+            [private_image_task, annotation_task]  # first execute this
             >> [other_ns_task, sidecar_task]  # then these
             >> label_task  # then this
             >> [image_task, resource_task]  # then the last two
