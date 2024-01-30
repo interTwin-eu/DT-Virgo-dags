@@ -347,7 +347,7 @@ if k8s:
                             image=f"{repo}:{tag}",
                         ),
                     ],
-                    imagePullSecrets=[
+                    image_pull_secrets=[
                         k8s.V1LocalObjectReference(
                             name="dockerhub",
                         ),
