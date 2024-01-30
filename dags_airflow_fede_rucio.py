@@ -25,7 +25,7 @@ except ImportError:
     )
     k8s = None
 
-#default_queue = "kubernetes"
+# default_queue = "kubernetes"
 default_queue = "default"
 
 if k8s:
@@ -36,7 +36,7 @@ if k8s:
         catchup=False,
         tags=["fede"],
     ) as dag:
-      
+
         #############################################################
         # Define config for pod with data access at CNAF and rucio
         #############################################################
@@ -61,7 +61,7 @@ if k8s:
                 )
             )
         }
-      
+
         #############################################################
         # pod with access to rucio
         #############################################################
@@ -79,6 +79,4 @@ if k8s:
         #############################################################
         # Define DAG execution
         #############################################################
-        (
-            rucio_task
-        )
+        (rucio_task)
