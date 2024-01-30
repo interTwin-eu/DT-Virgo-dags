@@ -4,13 +4,12 @@ Create a pod that can access rucio endpoint at CNAF
 from __future__ import annotations
 
 import logging
-import os
-from pathlib import Path
+# import os
+# from pathlib import Path
 
 import pendulum
-from airflow.configuration import conf
+# from airflow.configuration import conf
 from airflow.decorators import task
-from airflow.example_dags.libs.helper import print_stuff
 from airflow.models.dag import DAG
 
 log = logging.getLogger(__name__)
@@ -51,6 +50,7 @@ if k8s:
                         k8s.V1Container(
                             name="base",
                             image=f"{repo}:{tag}",
+                            command=["pwd"],
                         ),
                     ],
                     image_pull_secrets=[
@@ -71,7 +71,6 @@ if k8s:
             task_id="task_rucio",
         )
         def rucio_task():
-            print_stuff()
             log.info("Using image " + f"{repo}:{tag}")
 
         rucio_task = rucio_task()
