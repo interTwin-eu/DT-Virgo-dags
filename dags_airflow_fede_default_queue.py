@@ -2,12 +2,13 @@
 This is an example dag for using the default queue.
 It starts the following tasks:
 1) pod with annotation
-2) pod with mounted volume
+2) pod with mounted volume (doesn't work for unknown reasons)
 3) pod with sidecar and shared volume
 4) pod with label
 5) pod with other namespace
 6) pod with image
 7) pod with resource limits
+8) pod with image from private registry
 """
 from __future__ import annotations
 
@@ -330,6 +331,45 @@ if k8s:
 
         resource_task = task_with_resource_limits()
 
+        #############################################################
+        # Define config for task: pod with private image
+        #############################################################
+
+        repo = "leggerf/rucio-intertwin"
+        tag = "0.0.0"
+
+        kube_exec_config_private_image = {
+            "pod_override": k8s.V1Pod(
+                spec=k8s.V1PodSpec(
+                    containers=[
+                        k8s.V1Container(
+                            name="base",
+                            image=f"{repo}:{tag}",
+                        ),
+                    ],
+                    imagePullSecrets=[
+                        k8s.V1LocalObjectReference(
+                            name="dockerhub",
+                        ),
+                    ]
+                )
+            )
+        }
+
+        #############################################################
+        # 8) pod with private image
+        #############################################################
+        @task(
+            executor_config=kube_exec_config_private_image,
+            queue=default_queue,
+            task_id="task_private_image",
+        )
+        def private_image_task():
+            print_stuff()
+            log.info("Using image " + f"{repo}:{tag}")
+
+        private_image_task = private_image_task()
+ 
         #############################################################
         # Define DAG execution
         #############################################################
