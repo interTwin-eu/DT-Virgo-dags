@@ -6,6 +6,7 @@ from __future__ import annotations
 import logging
 
 import pendulum
+
 # from airflow.configuration import conf
 from airflow.decorators import task
 from airflow.models.dag import DAG
