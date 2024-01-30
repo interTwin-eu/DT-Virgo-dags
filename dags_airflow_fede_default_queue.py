@@ -379,5 +379,5 @@ if k8s:
             >> [other_ns_task, sidecar_task]  # then these
             >> label_task  # then this
             >> [image_task, resource_task]  # then the last two
-            >> volume_task
+            # >> volume_task
         )
