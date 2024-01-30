@@ -30,7 +30,7 @@ default_queue = "default"
 
 if k8s:
     with DAG(
-        dag_id="kubernetes_executor",
+        dag_id="rucio_executor",
         schedule=None,
         start_date=pendulum.datetime(2021, 1, 1, tz="UTC"),
         catchup=False,
