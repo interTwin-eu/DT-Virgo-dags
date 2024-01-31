@@ -55,6 +55,7 @@ if k8s:
                             name="base",
                             image=f"{repo}:{tag}",
                             command=["pwd"],
+                            image_pull_policy="Always",
                         ),
                     ],
                     image_pull_secrets=[
@@ -62,7 +63,6 @@ if k8s:
                             name="dockerhub",
                         ),
                     ],
-                    image_pull_policy="Always",
                 )
             )
         }
