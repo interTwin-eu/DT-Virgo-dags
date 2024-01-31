@@ -78,8 +78,8 @@ if k8s:
         def rucio_task():
             log.info("Using image " + f"{repo}:{tag}")
 
-            # response = subprocess.run("whoami", capture_output=True, text=True)
-            response = subprocess.run("./get-token.sh", capture_output=True, text=True)
+            response = subprocess.run("ls", capture_output=True, text=True)
+            # response = subprocess.run("./get-token.sh", capture_output=True, text=True)
             log.info("Response " + str(response))
             log.info("stdout " + response.stdout)
             log.info("stderr " + response.stderr)
