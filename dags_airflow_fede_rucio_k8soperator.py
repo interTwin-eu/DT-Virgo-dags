@@ -14,11 +14,11 @@ k = KubernetesPodOperator(
     namespace='airflow',
     image="ubuntu:16.04",
     cmds=["bash", "-cx"],
-    arguments=["echo", "10"],
+    arguments=["pwd", "ls"],
     labels={"foo": "bar"},
-    name="airflow-test-pod",
-    task_id="task",
-    is_delete_operator_pod=True,
+    name="test-data-access",
+    task_id="data-access",
+    is_delete_operator_pod=False,
     hostnetwork=False,
     dag=dag
 )
