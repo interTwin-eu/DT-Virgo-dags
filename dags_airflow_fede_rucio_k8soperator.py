@@ -21,3 +21,5 @@ k = KubernetesPodOperator(
     hostnetwork=False,
     dag=dag
 )
+
+k
