@@ -62,6 +62,7 @@ if k8s:
                             name="dockerhub",
                         ),
                     ],
+                    image_pull_policy="Always",
                 )
             )
         }
