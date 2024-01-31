@@ -28,8 +28,8 @@ except ImportError:
     )
     k8s = None
 
-# default_queue = "kubernetes"
-default_queue = "default"
+default_queue = "kubernetes"
+# default_queue = "default"
 
 if k8s:
     with DAG(
