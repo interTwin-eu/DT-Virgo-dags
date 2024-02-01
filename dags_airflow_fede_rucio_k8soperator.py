@@ -1,3 +1,8 @@
+"""
+Create a pod that can access rucio endpoint at CNAF
+- Using k8s operator
+"""
+
 from datetime import datetime
 
 from airflow import DAG
