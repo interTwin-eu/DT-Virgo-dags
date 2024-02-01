@@ -10,9 +10,14 @@ default_args = {
 
 dag = DAG('rucio_operator', default_args=default_args, schedule_interval=None)
 
+repo = "leggerf/rucio-intertwin"
+tag = "0.0.0"
+
 k = KubernetesPodOperator(
     namespace='airflow',
-    image="ubuntu:16.04",
+    image=f"{repo}:{tag}",  # image="ubuntu:16.04",
+    image_pull_secrets=[k8s.V1LocalObjectReference("dockerhub")],
+    image_pull_policy="Always",
     cmds=["bash", "-cx"],
     arguments=["pwd", "ls"],
     labels={"foo": "bar"},
@@ -23,4 +28,5 @@ k = KubernetesPodOperator(
     dag=dag
 )
 
+# define DAG pipeline
 (k)
