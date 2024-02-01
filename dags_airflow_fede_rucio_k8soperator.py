@@ -1,6 +1,7 @@
 from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
 from airflow import DAG
 from datetime import datetime
+from kubernetes.client import models as k8s
 
 default_args = {
     'owner': 'airflow',
