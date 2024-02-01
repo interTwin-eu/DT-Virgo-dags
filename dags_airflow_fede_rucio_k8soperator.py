@@ -1,6 +1,8 @@
-from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
-from airflow import DAG
 from datetime import datetime
+
+from airflow import DAG
+from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
+
 from kubernetes.client import models as k8s
 
 default_args = {
@@ -8,7 +10,9 @@ default_args = {
     'start_date': datetime(2020, 1, 1),
 }
 
-dag = DAG('rucio_operator', default_args=default_args, tags=["fede"], schedule_interval=None)
+dag = DAG(
+    'rucio_operator', default_args=default_args, tags=["fede"], schedule_interval=None
+)
 
 repo = "leggerf/rucio-intertwin"
 tag = "0.0.0"
