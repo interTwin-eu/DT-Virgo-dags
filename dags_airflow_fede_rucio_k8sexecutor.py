@@ -1,6 +1,8 @@
 """
 Create a pod that can access rucio endpoint at CNAF
+- Using k8s executor
 """
+
 from __future__ import annotations
 
 import logging
