@@ -6,7 +6,6 @@ Create a pod that can access rucio endpoint at CNAF
 from __future__ import annotations
 
 import logging
-import subprocess
 
 import pendulum
 
@@ -53,7 +52,7 @@ if k8s:
                 spec=k8s.V1PodSpec(
                     containers=[
                         k8s.V1Container(
-                            name="base",
+                            name="test-data-access",
                             image=f"{repo}:{tag}",
                             command=["./get-token.sh"],
                             # image_pull_policy="Always",
@@ -74,12 +73,12 @@ if k8s:
         @task(
             executor_config=kube_exec_config_rucio,
             queue=default_queue,
-            task_id="task_rucio",
+            task_id="data_access",
         )
-        def rucio_task():
+        def data_access_task():
             log.info("Using image " + f"{repo}:{tag}")
 
-        rucio_task = rucio_task()
+        rucio_task = data_access_task()
 
         #############################################################
         # Define DAG execution
