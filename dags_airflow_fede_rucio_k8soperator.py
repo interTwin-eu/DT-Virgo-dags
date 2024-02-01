@@ -6,7 +6,7 @@ from kubernetes.client import models as k8s
 default_args = {
     'owner': 'airflow',
     'start_date': datetime(2020, 1, 1),
-    'tags': ['fede']    
+    'tags': ['fede'],
 }
 
 dag = DAG('rucio_operator', default_args=default_args, schedule_interval=None)
@@ -26,6 +26,7 @@ k = KubernetesPodOperator(
     task_id="data-access",
     is_delete_operator_pod=False,
     hostnetwork=False,
+    startup_timeout_seconds=900,
     dag=dag
 )
 
