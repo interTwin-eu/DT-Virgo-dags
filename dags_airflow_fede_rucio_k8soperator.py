@@ -18,7 +18,7 @@ k = KubernetesPodOperator(
     namespace='airflow',
     image=f"{repo}:{tag}",  # image="ubuntu:16.04",
     image_pull_secrets=[k8s.V1LocalObjectReference("dockerhub")],
-    image_pull_policy="Always",
+    # image_pull_policy="Always",
     cmds=["bash", "-cx"],
     arguments=["pwd", "ls"],
     labels={"foo": "bar"},
