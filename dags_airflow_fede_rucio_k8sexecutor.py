@@ -55,7 +55,7 @@ if k8s:
                         k8s.V1Container(
                             name="base",
                             image=f"{repo}:{tag}",
-                            command=["pwd"],
+                            command=["./get-token.sh"],
                             # image_pull_policy="Always",
                         ),
                     ],
@@ -78,12 +78,6 @@ if k8s:
         )
         def rucio_task():
             log.info("Using image " + f"{repo}:{tag}")
-
-            response = subprocess.run("ls", capture_output=True, text=True)
-            # response = subprocess.run("./get-token.sh", capture_output=True, text=True)
-            log.info("Response " + str(response))
-            log.info("stdout " + response.stdout)
-            log.info("stderr " + response.stderr)
 
         rucio_task = rucio_task()
 
