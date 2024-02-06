@@ -9,7 +9,7 @@ import logging
 
 import pendulum
 
-# from airflow.configuration import conf
+from airflow.configuration import conf
 from airflow.decorators import task
 from airflow.models.dag import DAG
 
