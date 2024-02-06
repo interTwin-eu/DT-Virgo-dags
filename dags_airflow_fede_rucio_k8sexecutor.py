@@ -54,7 +54,7 @@ if k8s:
                         k8s.V1Container(
                             name="test-data-access",
                             image=f"{repo}:{tag}",
-                            command=["./get-token.sh"],
+                            # command=["./get-token.sh"],
                             # image_pull_policy="Always",
                         ),
                     ],
