@@ -38,5 +38,22 @@ k = KubernetesPodOperator(
     dag=dag,
 )
 
+k1 = KubernetesPodOperator(
+    namespace="airflow",
+    image=f"{repo}:{tag}",  # image="ubuntu:16.04",
+    image_pull_secrets=[k8s.V1LocalObjectReference("dockerhub")],
+    # image_pull_policy="Always",
+    cmds=["./get-token.sh"],
+    # cmds=["bash", "-cx"],
+    # arguments=["pwd", "ls"],
+    labels={"foo": "bar"},
+    name="test-data-access-1",
+    task_id="data-access-1",
+    is_delete_operator_pod=False,
+    hostnetwork=False,
+    startup_timeout_seconds=900,
+    dag=dag,
+)
+
 # define DAG pipeline
-(k >> k)
+(k >> k1)
