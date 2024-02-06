@@ -264,6 +264,7 @@ if k8s:
         )
         def image_override_task():
             print_stuff()
+            log.info("Using image " + f"{repo}:{tag}")
 
         image_task = image_override_task()
 
