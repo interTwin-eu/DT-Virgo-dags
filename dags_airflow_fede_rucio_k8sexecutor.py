@@ -52,9 +52,9 @@ if k8s:
                 spec=k8s.V1PodSpec(
                     containers=[
                         k8s.V1Container(
-                            name="base",
+                            name="base",  # the image must be named base
                             image=f"{repo}:{tag}",
-                            # command=["./get-token.sh"],
+                            command=["./get-token.sh"],
                             # image_pull_policy="Always",
                         ),
                     ],
