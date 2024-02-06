@@ -58,7 +58,7 @@ if k8s:
                         k8s.V1Container(
                             name="base",  # the image must be named base
                             # image=f"{repo}:{tag}",  # the image must contain airflow
-                            args=['sleep 3000'],
+                            args=["sleep 3000"],
                             command=["bash", "-cx"],
                         ),
                         k8s.V1Container(
