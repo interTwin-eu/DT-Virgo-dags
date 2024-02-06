@@ -68,11 +68,11 @@ if k8s:
                             command=["bash", "-cx"],
                         ),
                     ],
-                    # image_pull_secrets=[
-                    #    k8s.V1LocalObjectReference(
-                    #        name="dockerhub",
-                    #    ),
-                    # ],
+                    image_pull_secrets=[
+                        k8s.V1LocalObjectReference(
+                            name="dockerhub",
+                        ),
+                     ],
                 )
             )
         }
