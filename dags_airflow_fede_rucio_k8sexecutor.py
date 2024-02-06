@@ -60,7 +60,6 @@ if k8s:
                             # command=["./get-token.sh"],
                             # image_pull_policy="Always",
                         ),
-                    ],
                         k8s.V1Container(
                             name="sidecar",
                             image="ubuntu",
