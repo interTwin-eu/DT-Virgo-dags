@@ -72,7 +72,7 @@ if k8s:
                         k8s.V1LocalObjectReference(
                             name="dockerhub",
                         ),
-                     ],
+                    ],
                 )
             )
         }
