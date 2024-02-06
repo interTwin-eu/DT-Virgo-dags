@@ -44,11 +44,12 @@ if k8s:
         # Define config for pod with data access at CNAF and rucio
         #############################################################
 
-        # repo = "leggerf/rucio-intertwin"
-        # tag = "0.0.0"
+        repo = "leggerf/rucio-intertwin"
+        tag = "0.0.0"
+
         # use image from worker node as example
-        repo = conf.get("kubernetes_executor", "worker_container_repository")
-        tag = conf.get("kubernetes_executor", "worker_container_tag")
+        # repo = conf.get("kubernetes_executor", "worker_container_repository")
+        # tag = conf.get("kubernetes_executor", "worker_container_tag")
 
         kube_exec_config_rucio = {
             "pod_override": k8s.V1Pod(
@@ -56,13 +57,13 @@ if k8s:
                     containers=[
                         k8s.V1Container(
                             name="base",  # the image must be named base
-                            image=f"{repo}:{tag}",
+                            # image=f"{repo}:{tag}",
                             # command=["./get-token.sh"],
                             # image_pull_policy="Always",
                         ),
                         k8s.V1Container(
                             name="sidecar",
-                            image="ubuntu",
+                            image=f"{repo}:{tag}",
                             args=['echo "Hello"'],
                             command=["bash", "-cx"],
                         ),
