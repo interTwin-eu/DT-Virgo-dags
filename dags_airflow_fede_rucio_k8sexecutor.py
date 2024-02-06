@@ -66,7 +66,7 @@ if k8s:
                             image=f"{repo}:{tag}",
                             # args=["sleep 3000"],
                             command=["bash", "-cx"],
-                            command=["./get-token.sh"],
+                            args=["./get-token.sh"],
                             image_pull_policy="Always",
                         ),
                     ],
