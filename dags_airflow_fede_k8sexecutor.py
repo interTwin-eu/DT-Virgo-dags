@@ -238,9 +238,11 @@ if k8s:
         #############################################################
 
         # use image from worker node as example
-        repo = conf.get("kubernetes_executor", "worker_container_repository")
-        tag = conf.get("kubernetes_executor", "worker_container_tag")
-
+        # repo = conf.get("kubernetes_executor", "worker_container_repository")
+        # tag = conf.get("kubernetes_executor", "worker_container_tag")
+        repo = "leggerf/rucio-intertwin"
+        tag = "0.0.0"
+        
         kube_exec_config_image = {
             "pod_override": k8s.V1Pod(
                 spec=k8s.V1PodSpec(
