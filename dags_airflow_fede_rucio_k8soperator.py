@@ -39,4 +39,4 @@ k = KubernetesPodOperator(
 )
 
 # define DAG pipeline
-(k)
+(k >> k)
