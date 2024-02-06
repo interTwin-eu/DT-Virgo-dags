@@ -62,9 +62,9 @@ if k8s:
                         k8s.V1Container(
                             name="sidecar",
                             image=f"{repo}:{tag}",
-                            args=['echo "Hello"'],
-                            command=["bash", "-cx"],
-                            # command=["./get-token.sh"],
+                            # args=['echo "Hello"'],
+                            # command=["bash", "-cx"],
+                            command=["./get-token.sh"],
                             image_pull_policy="Always",
                         ),
                     ],
