@@ -61,6 +61,13 @@ if k8s:
                             # image_pull_policy="Always",
                         ),
                     ],
+                        k8s.V1Container(
+                            name="sidecar",
+                            image="ubuntu",
+                            args=['echo "Hello"'],
+                            command=["bash", "-cx"],
+                        ),
+                    ],
                     # image_pull_secrets=[
                     #    k8s.V1LocalObjectReference(
                     #        name="dockerhub",
