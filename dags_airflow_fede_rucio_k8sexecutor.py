@@ -44,8 +44,11 @@ if k8s:
         # Define config for pod with data access at CNAF and rucio
         #############################################################
 
-        repo = "leggerf/rucio-intertwin"
-        tag = "0.0.0"
+        # repo = "leggerf/rucio-intertwin"
+        # tag = "0.0.0"
+        # use image from worker node as example
+        repo = conf.get("kubernetes_executor", "worker_container_repository")
+        tag = conf.get("kubernetes_executor", "worker_container_tag")
 
         kube_exec_config_rucio = {
             "pod_override": k8s.V1Pod(
