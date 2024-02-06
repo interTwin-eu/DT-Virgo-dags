@@ -9,7 +9,7 @@ import logging
 
 import pendulum
 
-from airflow.configuration import conf
+# from airflow.configuration import conf
 from airflow.decorators import task
 from airflow.models.dag import DAG
 
@@ -57,15 +57,15 @@ if k8s:
                     containers=[
                         k8s.V1Container(
                             name="base",  # the image must be named base
-                            # image=f"{repo}:{tag}",
-                            # command=["./get-token.sh"],
-                            # image_pull_policy="Always",
+                            # image=f"{repo}:{tag}",  # the image must contain airflow
                         ),
                         k8s.V1Container(
                             name="sidecar",
                             image=f"{repo}:{tag}",
                             args=['echo "Hello"'],
                             command=["bash", "-cx"],
+                            # command=["./get-token.sh"],
+                            image_pull_policy="Always",
                         ),
                     ],
                     image_pull_secrets=[
