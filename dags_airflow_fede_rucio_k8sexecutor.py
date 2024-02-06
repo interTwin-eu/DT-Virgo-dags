@@ -54,15 +54,15 @@ if k8s:
                         k8s.V1Container(
                             name="base",  # the image must be named base
                             image=f"{repo}:{tag}",
-                            command=["./get-token.sh"],
+                            # command=["./get-token.sh"],
                             # image_pull_policy="Always",
                         ),
                     ],
-                    image_pull_secrets=[
-                        k8s.V1LocalObjectReference(
-                            name="dockerhub",
-                        ),
-                    ],
+                    # image_pull_secrets=[
+                    #    k8s.V1LocalObjectReference(
+                    #        name="dockerhub",
+                    #    ),
+                    # ],
                 )
             )
         }
