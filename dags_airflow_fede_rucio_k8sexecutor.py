@@ -94,6 +94,19 @@ if k8s:
         rucio_task = data_access_task()
 
         #############################################################
+        # another pod with access to rucio
+        #############################################################
+        @task(
+            executor_config=kube_exec_config_rucio,
+            queue=default_queue,
+            task_id="data_access_1",
+        )
+        def data_access_1_task():
+            log.info("Using image " + f"{repo}:{tag}")
+
+        rucio_1_task = data_access_1_task()
+
+        #############################################################
         # Define DAG execution
         #############################################################
-        (rucio_task)
+        (rucio_task >> rucio_1_task)
