@@ -27,7 +27,10 @@ for f_id in [1, 2, 3]:
     wait = FileSensor(
         task_id=f"wait_for_file_{f_id}",
         fs_conn_id="temp_data",
-        filepath=f"f_{f_id}/data.csv",
+        filepath=f"d_{f_id}/data.csv",
+        poke_interval=10,
+        timeout=180,
+
         dag=dag,
     )
     copy = DummyOperator(task_id=f"copy_f_{f_id}", dag=dag)
