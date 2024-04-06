@@ -26,7 +26,8 @@ create_metrics = DummyOperator(task_id="create_metrics", dag=dag)
 for f_id in [1, 2, 3]:
     wait = FileSensor(
         task_id=f"wait_for_file_{f_id}",
-        filepath=f"/tmp/f_{f_id}/data.csv",
+        fs_conn_id=temp_data,
+        filepath=f"f_{f_id}/data.csv",
         dag=dag,
     )
     copy = DummyOperator(task_id=f"copy_f_{f_id}", dag=dag)
