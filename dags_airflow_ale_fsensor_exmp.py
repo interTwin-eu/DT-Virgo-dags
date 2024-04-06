@@ -27,6 +27,6 @@ for f_id in [1, 2, 3]:
         filepath=f"/data/f_{f_id}/data.csv",
         dag=dag,
     )
-    copy = DummyOperator(task_id=f"copy_to_raw_supermarket_{f_id}", dag=dag)
-    process = DummyOperator(task_id=f"process_supermarket_{f_id}", dag=dag)
+    copy = DummyOperator(task_id=f"copy_f_{f_id}", dag=dag)
+    process = DummyOperator(task_id=f"process_f_{f_id}", dag=dag)
     wait >> copy >> process >> create_metrics
