@@ -15,8 +15,8 @@ dag = DAG(
     start_date=airflow.utils.dates.days_ago(3),
     schedule_interval=None,
     description="A demonstration DAG using FileSensor.",
-    #The execution doesn't proceed if a task fails
-    default_args={"depends_on_past": True},
+    
+    #default_args={"depends_on_past": True},
 )
 
 
