@@ -15,7 +15,9 @@ dag = DAG(
 
 def check_response_itm(response):
     js = response.json()
-    LoggingMixin().log.info("Json var type is")
+
+    dummy=type(js)
+    LoggingMixin().log.info("Json var type is %s",dummy)
 
     return True
     
