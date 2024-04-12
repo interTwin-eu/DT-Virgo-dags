@@ -5,6 +5,8 @@ See the airflow UI.
 
 FileSensor expects a file in the local filesystem.
 
+A directory d_1 was put in the temp directory with the data.csv file
+
 
 """
 
