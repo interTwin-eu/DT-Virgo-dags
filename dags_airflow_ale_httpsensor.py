@@ -1,6 +1,6 @@
 import airflow.utils.dates
 from airflow import DAG
-from airflow.operator.dummy import DummyOperator
+from airflow.operators.dummy import DummyOperator
 from airflow.providers.http.sensors.http import HttpSensor
 
 dag = DAG(
