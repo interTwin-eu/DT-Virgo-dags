@@ -1,7 +1,9 @@
 import airflow.utils.dates
+from airflow.utils.log.logging_mixin import LoggingMixin
 from airflow import DAG
 from airflow.operators.dummy import DummyOperator
 from airflow.providers.http.sensors.http import HttpSensor
+
 
 dag = DAG(
     dag_id="httpsens_exmp",
@@ -13,7 +15,7 @@ dag = DAG(
 
 def check_response_itm(response):
     js = response.json()
-    print("The json var is a ",type(js))
+    LoggingMixin().log.info("Json var type is",type(js))
 
     return True
     
