@@ -47,9 +47,25 @@ def check_response_usr(response):
    js = response.json()
    output=js[0]
 
-   LoggingMixin().log.info("Member of the list is %s",type(output))
+   flag=None
+    
 
-   return True 
+   if(js):
+    LoggingMixin().log.info("Read json object")
+    
+
+    if((output['name']=="Leanne Graham")and(output['username']=="Bret")): 
+      flag=True
+    else:
+      flag=False   
+   else:
+    flag=False
+    
+   return flag
+    
+   
+
+   return flag 
     
 checkNItems = HttpSensor(task_id="check", 
   http_conn_id="fakeAPIPlaceh", 
