@@ -1,3 +1,10 @@
+"""
+Example code for HttpSensor
+
+
+"""
+
+
 import airflow.utils.dates
 from airflow.utils.log.logging_mixin import LoggingMixin
 from airflow import DAG
@@ -14,12 +21,27 @@ dag = DAG(
 )
 
 def check_response_itm(response):
+    
+    LoggingMixin().log.info("Callable function start")
+
+    #the object type is List
     js = response.json()
+    flag=None
+    
 
-    dummy=type(js)
-    LoggingMixin().log.info("Json var type is %s",dummy)
+    if(js):
+     LoggingMixin().log.info("Read json object")
+     n_itm=len(js) 
+     LoggingMixin().log.info("Json has %s items",n_itm)
 
-    return True
+     if(n_itm)>=10: 
+       flag=True
+     else:
+      flag=False   
+    else:
+     flag=False
+    
+    return flag
     
 
     
