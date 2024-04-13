@@ -60,6 +60,7 @@ checkNItems = HttpSensor(task_id="check",
   
 )
 
+wait = DummyOperator(task_id="wait", dag=dag)
 
 checkUser = HttpSensor(task_id="checkUser", 
   http_conn_id="fakeAPIPlaceh", 
@@ -75,7 +76,7 @@ checkUser = HttpSensor(task_id="checkUser",
 
 create_metrics = DummyOperator(task_id="create_metrics", dag=dag)
 
-checkNItems>>checkUser>>create_metrics
+checkNItems>>wait>>checkUser>>create_metrics
 
 
 
