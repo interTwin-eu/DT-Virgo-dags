@@ -43,8 +43,13 @@ def check_response_itm(response):
     
     return flag
     
+def check_response_usr(response):
+   js = response.json()
+   output=js[0]
 
-    
+   LoggingMixin().log.info("Member of the list is %s",type(output))
+
+   return True 
     
 checkNItems = HttpSensor(task_id="check", 
   http_conn_id="fakeAPIPlaceh", 
@@ -55,9 +60,22 @@ checkNItems = HttpSensor(task_id="check",
   
 )
 
+
+checkUser = HttpSensor(task_id="checkUser", 
+  http_conn_id="fakeAPIPlaceh", 
+  endpoint="users", 
+  response_check=lambda response: check_response_usr(response), 
+  poke_interval=10, 
+  timeout=100,
+  
+)
+
+
+
+
 create_metrics = DummyOperator(task_id="create_metrics", dag=dag)
 
-checkNItems>>create_metrics
+checkNItems>>checkUser>>create_metrics
 
 
 
