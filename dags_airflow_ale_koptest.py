@@ -20,7 +20,7 @@ create_pod=KubernetesPodOperator(
  image=f"{repo}:{tag}",
  image_pull_policy="Always",
  ##cmds
- name="test pod",
+ name="test_pod",
  task_id="run_pod",
  is_delete_operator_pod=True,
  startup_timeout_seconds=900,
