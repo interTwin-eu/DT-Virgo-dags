@@ -31,7 +31,8 @@ create_pod=KubernetesPodOperator(
 
 
 
-create_metrics = DummyOperator(task_id="create_metrics", dag=dag)
+#create_metrics = DummyOperator(task_id="create_metrics", dag=dag)
 
-create_pod>>create_metrics
+create_pod
+#>>create_metrics
 
