@@ -16,7 +16,7 @@ n_cond=10
 
 def check_response(response):
    js = response.json()
-   output=js[0]
+   output=js
 
    flag=None
     
