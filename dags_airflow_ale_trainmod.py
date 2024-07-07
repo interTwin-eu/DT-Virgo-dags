@@ -61,7 +61,7 @@ chech_train_resp=BranchPythonOperator(
 )
 
 next_sens = DummyOperator(task_id="next_sensor", dag=dag)
-next_metrics = DummyOperator(task_id="next_sensor", dag=dag)
+next_metrics = DummyOperator(task_id="next_metrics", dag=dag)
 
 
 
