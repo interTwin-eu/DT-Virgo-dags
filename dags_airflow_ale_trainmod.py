@@ -6,8 +6,8 @@ from airflow.providers.http.sensors.http import HttpSensor
 from airflow.providers.http.operators.http import SimpleHttpOperator
 import json
 
-baseapiurl="http://gflapi.glitchflow.svc.cluster.local:8000/"
-apifrzendp="train"
+#baseapiurl="http://gflapi.glitchflow.svc.cluster.local:8000/"
+#apifrzendp="train"
 
 dag = DAG(
     dag_id="Trainpipe",
@@ -22,7 +22,8 @@ IniTrain = DummyOperator(task_id="start_training", dag=dag)
 sign_train = SimpleHttpOperator(
     task_id="send_frz_sign",
     method="POST",
-    endpoint=("{{baseapiurl}}{{apifrzendp}}"),
+    http_conn_id="testapp",
+    endpoint="train",
     data=json.dumps({"user":"airflow","token":"airflow"}),
     headers={"Content-Type": "application/json"},
     dag=dag,
