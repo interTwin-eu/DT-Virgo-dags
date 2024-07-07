@@ -95,7 +95,7 @@ next_sens = HttpSensor(task_id="next_sensor",
   response_check=lambda response: check_response(response), 
   poke_interval=10, 
   timeout=3600,
-  #mode="reschedule",
+  mode="reschedule",
   dag=dag
 )
 
@@ -121,7 +121,7 @@ next_metrics = DummyOperator(task_id="next_metrics", dag=dag)
 
 
 
-join_branch = DummyOperator(task_id="join_brc", dag=dag)
+join_branch = DummyOperator(task_id="join_brc",trigger_rule="none_failed", dag=dag)
 list_proc = DummyOperator(task_id="listen_preproc", dag=dag)
 
 
