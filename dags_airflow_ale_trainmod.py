@@ -11,9 +11,11 @@ from datetime import timedelta
 
 #baseapiurl="http://gflapi.glitchflow.svc.cluster.local:8000/"
 #apifrzendp="train"
+#apistat="stats"
 
 WAITMSG="WAITING"
 FRZMSG="FROZEN"
+MAXBUFSZ=2000
 
 dag = DAG(
     dag_id="Trainpipe",
@@ -24,6 +26,7 @@ dag = DAG(
 )
 
 
+##DAG CALLABLES
 def pick_branch(**context):
 
     jsmsg=context["task_instance"].xcom_pull(
@@ -35,10 +38,31 @@ def pick_branch(**context):
     if(respob["resp"]==WAITMSG):
         return "next_sensor"
     else:
-        return "next_metrics"     
+        return "next_metrics"  
+
+
+
+def check_response(response):
+   js = response.json()
+   output=js
+
+   flag=None
+    
+
+   if(js):
+    LoggingMixin().log.info("Read json object")
+    
+
+    if(output['buf_size']>=MAXBUFSZ): 
+      flag=True
+    else:
+      flag=False   
+   
+    
+   return flag       
 
     
-   
+### DAG DEFS   
 IniTrain = DummyOperator(task_id="start_training", dag=dag)
 
 sign_train = SimpleHttpOperator(
@@ -55,15 +79,54 @@ sign_train = SimpleHttpOperator(
     dag=dag,
 )
 
+
+
 chech_train_resp=BranchPythonOperator(
     task_id="check_frz_sign",
     python_callable=pick_branch,
+    dag=dag
 )
 
-next_sens = DummyOperator(task_id="next_sensor", dag=dag)
-next_metrics = DummyOperator(task_id="next_metrics", dag=dag)
 
+###SENSOR BRANCH
+next_sens = HttpSensor(task_id="next_sensor", 
+  http_conn_id="testapp", 
+  endpoint="stats", 
+  response_check=lambda response: check_response(response), 
+  poke_interval=10, 
+  timeout=3600,
+  mode="reschedule",
+  dag=dag
+)
+
+freeze= SimpleHttpOperator(
+    task_id="freeze_ds",
+    method="POST",
+    http_conn_id="testapp",
+    endpoint="train",
+    data=json.dumps({"user":"airflow","token":"airflow"}),
+    headers={"Content-Type": "application/json"},
+    
+    
+    retries=3,
+    retry_delay=timedelta(minutes=5),
+    dag=dag,
+)
+#######################################
+
+
+###BEST CASE BRANCH
+next_metrics = DummyOperator(task_id="next_metrics", dag=dag)
+##########################################################
+
+
+
+join_branch = DummyOperator(task_id="join_brc", dag=dag)
+list_proc = DummyOperator(task_id="listen_preproc", dag=dag)
 
 
 
 IniTrain>>sign_train>>chech_train_resp>>[next_sens,next_metrics]
+next_sens>>freeze>>join_branch
+next_metrics>>join_branch
+join_branch>>list_proc

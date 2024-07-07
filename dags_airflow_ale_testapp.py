@@ -25,13 +25,16 @@ def check_response(response):
     LoggingMixin().log.info("Read json object")
     
 
-    if(output['buf_size']>=n_cond): 
+    if(output['buff_size']>=n_cond): 
       flag=True
     else:
       flag=False   
    
     
    return flag
+
+
+
     
 checkAppState = HttpSensor(task_id="checkState", 
   http_conn_id="testapp", 
@@ -41,6 +44,7 @@ checkAppState = HttpSensor(task_id="checkState",
   timeout=3600,
   
 )
+
 
 create_metrics = DummyOperator(task_id="create_metrics", dag=dag) 
 
