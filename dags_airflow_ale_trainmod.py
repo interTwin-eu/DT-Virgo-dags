@@ -95,7 +95,7 @@ next_sens = HttpSensor(task_id="next_sensor",
   response_check=lambda response: check_response(response), 
   poke_interval=10, 
   timeout=3600,
-  mode="reschedule",
+  #mode="reschedule",
   dag=dag
 )
 
