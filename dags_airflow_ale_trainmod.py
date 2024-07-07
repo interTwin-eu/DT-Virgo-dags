@@ -10,7 +10,7 @@ baseapiurl="http://gflapi.glitchflow.svc.cluster.local:8000/"
 apifrzendp="train"
 
 dag = DAG(
-    dag_id="testapp",
+    dag_id="Trainpipe",
     start_date=airflow.utils.dates.days_ago(3),
     schedule_interval=None,
     description="DAG implementing the AI training data pipeline.",
