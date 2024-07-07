@@ -53,7 +53,7 @@ def check_response(response):
     LoggingMixin().log.info("Read json object")
     
 
-    if(output['buf_size']>=MAXBUFSZ): 
+    if(output['buff_size']>=MAXBUFSZ): 
       flag=True
     else:
       flag=False   
