@@ -127,6 +127,6 @@ list_proc = DummyOperator(task_id="listen_preproc", dag=dag)
 
 
 IniTrain>>sign_train>>chech_train_resp>>[next_sens,next_metrics]
-next_sens>>freeze>>join_branch
-next_metrics>>join_branch
+next_sens>>freeze
+[next_metrics,freeze]>>join_branch
 join_branch>>list_proc
