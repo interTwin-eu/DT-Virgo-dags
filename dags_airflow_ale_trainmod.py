@@ -28,7 +28,7 @@ sign_train = SimpleHttpOperator(
     endpoint="train",
     data=json.dumps({"user":"airflow","token":"airflow"}),
     headers={"Content-Type": "application/json"},
-    xcom_push=True,
+    
     retries=3,
     retry_delay=timedelta(minutes=5),
     dag=dag,
