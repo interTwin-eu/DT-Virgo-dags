@@ -3,7 +3,7 @@ from airflow.utils.log.logging_mixin import LoggingMixin
 from airflow import DAG
 from airflow.operators.dummy import DummyOperator
 from airflow.providers.http.sensors.http import HttpSensor
-from airflow.providers.http.operators.http import HttpOperator
+from airflow.providers.http.operators.http import SimpleHttpOperator
 import json
 
 baseapiurl="http://gflapi.glitchflow.svc.cluster.local:8000/"
@@ -19,7 +19,7 @@ dag = DAG(
 
 IniTrain = DummyOperator(task_id="start_training", dag=dag)
 
-sign_train = HttpOperator(
+sign_train = SimpleHttpOperator(
     task_id="send_frz_sign",
     method="POST",
     endpoint="{{baseapiurl}}{{apifrzendp}}",
