@@ -28,6 +28,6 @@ sign_train = SimpleHttpOperator(
     dag=dag,
 )
 
-Next = DummyOperator(task_id="start_training", dag=dag)
+Next = DummyOperator(task_id="next", dag=dag)
 
 IniTrain>>sign_train>>Next
