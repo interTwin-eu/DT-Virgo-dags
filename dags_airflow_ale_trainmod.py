@@ -22,7 +22,7 @@ IniTrain = DummyOperator(task_id="start_training", dag=dag)
 sign_train = SimpleHttpOperator(
     task_id="send_frz_sign",
     method="POST",
-    endpoint="{{baseapiurl}}{{apifrzendp}}",
+    endpoint=("{{baseapiurl}}{{apifrzendp}}"),
     data=json.dumps({"user":"airflow","token":"airflow"}),
     headers={"Content-Type": "application/json"},
     dag=dag,
