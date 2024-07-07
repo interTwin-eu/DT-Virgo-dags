@@ -66,4 +66,4 @@ next_metrics = DummyOperator(task_id="next_metrics", dag=dag)
 
 
 
-IniTrain>>sign_train
+IniTrain>>sign_train>>chech_train_resp
