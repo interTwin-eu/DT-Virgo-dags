@@ -5,6 +5,8 @@ from airflow.operators.dummy import DummyOperator
 from airflow.providers.http.sensors.http import HttpSensor
 from airflow.providers.http.operators.http import SimpleHttpOperator
 from airflow.operators.python import BranchPythonOperator
+from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
+from kubernetes.client import models as k8s
 
 import json
 from datetime import timedelta
@@ -122,11 +124,50 @@ next_metrics = DummyOperator(task_id="next_metrics", dag=dag)
 
 
 join_branch = DummyOperator(task_id="join_brc",trigger_rule="none_failed", dag=dag)
-list_proc = DummyOperator(task_id="listen_preproc", dag=dag)
+
+
+preproc =KubernetesPodOperator(
+        # unique id of the task within the DAG
+        task_id="preQ",
+        # the Docker image to launch
+        image="romanoa77/preq:0.2",
+        # launch the Pod on the same cluster as Airflow is running on
+        in_cluster=True,
+        # launch the Pod in the same namespace as Airflow is running in
+        namespace="glitchflow",
+        # Pod configuration
+        # name the Pod
+        name="airflow_preprocessor",
+        
+        # attach labels to the Pod, can be used for grouping
+        labels={"app": "preq", "backend": "airflow"},
+        # reattach to worker instead of creating a new Pod on worker failure
+        reattach_on_restart=True,
+        # delete Pod after the task is finished
+        is_delete_operator_pod=True,
+        # get log stdout of the container as task logs
+        get_logs=True,
+        # log events in case of Pod failure
+        log_events_on_failure=True,
+        # enable xcom
+        do_xcom_push=True,
+        volumes = k8s.V1Volume(
+        name="gwdatal",
+        persistent_volume_claim=k8s.V1PersistentVolumeClaimVolumeSource(claim_name="gwdatal"),
+        ),
+        volume_mounts=[
+        k8s.V1VolumeMount(mount_path="/app/data", name="gwdatal", sub_path=None, read_only=False)
+        ],
+        dag=dag,
+        
+        #env_vars={"NAME_TO_GREET": f"{name}"},
+    )
+
+ 
 
 
 
 IniTrain>>sign_train>>chech_train_resp>>[next_sens,next_metrics]
 next_sens>>freeze
 [next_metrics,freeze]>>join_branch
-join_branch>>list_proc
+join_branch>>preproc
