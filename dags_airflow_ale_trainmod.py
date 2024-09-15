@@ -155,9 +155,8 @@ preproc =KubernetesPodOperator(
         name="gwdatal",
         persistent_volume_claim=k8s.V1PersistentVolumeClaimVolumeSource(claim_name="gwdatal"),
         ),
-        volume_mounts=[
-        k8s.V1VolumeMount(mount_path="/app/data", name="gwdatal", sub_path=None, read_only=False)
-        ],
+        volume_mounts=k8s.V1VolumeMount(mount_path="/app/data", name="gwdatal", sub_path=None, read_only=False)
+        ,
         dag=dag,
         
         #env_vars={"NAME_TO_GREET": f"{name}"},
