@@ -45,8 +45,7 @@ Op =KubernetesPodOperator(
         # Pod configuration
         # name the Pod
         name="airflow_op",
-        email="alessio.romano329@edu.unito.it",
-        email_on_failure=True,
+        
         
         # attach labels to the Pod, can be used for grouping
         labels={"app": "preq", "backend": "airflow"},
