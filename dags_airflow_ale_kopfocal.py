@@ -35,7 +35,8 @@ Op =KubernetesPodOperator(
         # unique id of the task within the DAG
         task_id="kubeop",
         # the Docker image to launch
-        image="ubuntu",
+        image="debian",
+        image_pull_policy="Always",
         cmds=["bash","-cx"],
         arguments=["echo","Hello World"],
         # launch the Pod on the same cluster as Airflow is running on
@@ -52,7 +53,7 @@ Op =KubernetesPodOperator(
         # reattach to worker instead of creating a new Pod on worker failure
         reattach_on_restart=True,
         # delete Pod after the task is finished
-        is_delete_operator_pod=False,
+        is_delete_operator_pod=True,
         # get log stdout of the container as task logs
         get_logs=True,
         # log events in case of Pod failure
