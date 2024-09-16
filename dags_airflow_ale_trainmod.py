@@ -134,7 +134,7 @@ preproc =KubernetesPodOperator(
         # launch the Pod on the same cluster as Airflow is running on
         in_cluster=True,
         # launch the Pod in the same namespace as Airflow is running in
-        namespace="glitchflow",
+        namespace="airflow",
         # Pod configuration
         # name the Pod
         name="airflow_preprocessor",
