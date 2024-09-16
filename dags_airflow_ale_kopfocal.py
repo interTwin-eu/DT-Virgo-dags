@@ -3,7 +3,7 @@ from airflow.utils.log.logging_mixin import LoggingMixin
 from airflow import DAG
 from airflow.operators.dummy import DummyOperator
 
-from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
+from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
 from kubernetes.client import models as k8s
 
 import json
