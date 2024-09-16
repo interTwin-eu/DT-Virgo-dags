@@ -36,6 +36,7 @@ Op =KubernetesPodOperator(
         task_id="kubeop",
         # the Docker image to launch
         image="ubuntu:20.04",
+        cmds=["sleep","infinity"],
         # launch the Pod on the same cluster as Airflow is running on
         in_cluster=True,
         # launch the Pod in the same namespace as Airflow is running in
