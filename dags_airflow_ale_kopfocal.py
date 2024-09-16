@@ -14,7 +14,7 @@ from datetime import timedelta
 
 
 dag = DAG(
-    dag_id="kubeoptest",
+    dag_id="kubeoptest_focal",
     start_date=airflow.utils.dates.days_ago(3),
     schedule_interval=None,
     description="Test for kubernetes operator",
