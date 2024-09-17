@@ -32,6 +32,7 @@ Ini = DummyOperator(task_id="start_training", dag=dag)
 
 
 Op =KubernetesPodOperator(
+        namespace="glitchflow",
         # unique id of the task within the DAG
         task_id="kubeop",
         # the Docker image to launch
@@ -42,7 +43,7 @@ Op =KubernetesPodOperator(
         # launch the Pod on the same cluster as Airflow is running on
         in_cluster=True,
         # launch the Pod in the same namespace as Airflow is running in
-        namespace="airflow",
+        
         # Pod configuration
         # name the Pod
         name="airflow_op",
