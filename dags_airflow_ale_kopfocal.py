@@ -33,22 +33,20 @@ Ini = DummyOperator(task_id="start_training", dag=dag)
 
 Op =KubernetesPodOperator(
         namespace="glitchflow",
-        # unique id of the task within the DAG
-        task_id="kubeop",
+       
         # the Docker image to launch
         image="debian",
         image_pull_policy="Always",
         cmds=["bash","-cx"],
         arguments=["echo","Hello World"],
-        # launch the Pod on the same cluster as Airflow is running on
-        in_cluster=True,
-        # launch the Pod in the same namespace as Airflow is running in
+        
+        
         
         # Pod configuration
         # name the Pod
         name="airflow_op",
-        
-        
+        # launch the Pod on the same cluster as Airflow is running on
+        in_cluster=True,
         # attach labels to the Pod, can be used for grouping
         labels={"app": "preq", "backend": "airflow"},
         # reattach to worker instead of creating a new Pod on worker failure
@@ -61,6 +59,8 @@ Op =KubernetesPodOperator(
         log_events_on_failure=True,
         # enable xcom
         do_xcom_push=True,
+        # unique id of the task within the DAG
+        task_id="kubeop",
         dag=dag,
         
         #env_vars={"NAME_TO_GREET": f"{name}"},
