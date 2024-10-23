@@ -130,7 +130,7 @@ preproc =KubernetesPodOperator(
         # unique id of the task within the DAG
         task_id="preQ",
         # the Docker image to launch
-        image="romanoa77/preq:0.3.air",
+        image="romanoa77/preq:0.4.air",
         # launch the Pod on the same cluster as Airflow is running on
         in_cluster=True,
         # launch the Pod in the same namespace as Airflow is running in
