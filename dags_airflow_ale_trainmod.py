@@ -152,10 +152,10 @@ preproc =KubernetesPodOperator(
         # enable xcom
         do_xcom_push=True,
         volumes = [k8s.V1Volume(
-        name="gwdatal",
-        persistent_volume_claim=k8s.V1PersistentVolumeClaimVolumeSource(claim_name="gwdatal"),
+        name="gwdataln",
+        persistent_volume_claim=k8s.V1PersistentVolumeClaimVolumeSource(claim_name="gwdataln"),
         )],
-        volume_mounts=[k8s.V1VolumeMount(mount_path="/app/data", name="gwdatal", sub_path=None, read_only=False)
+        volume_mounts=[k8s.V1VolumeMount(mount_path="/app/data", name="gwdataln", sub_path=None, read_only=False)
         ],
         dag=dag,
         
