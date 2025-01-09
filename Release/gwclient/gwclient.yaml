@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gwclient
+spec:
+  containers:
+  - name: gwclient
+    image: romanoa77/gwpyimg:0.1.rc
+    
+    

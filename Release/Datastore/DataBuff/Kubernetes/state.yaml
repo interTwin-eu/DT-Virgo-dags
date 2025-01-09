@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: databuff
+  labels:
+    app: databuff
+spec:
+  ports:
+  - name: ginport
+    port: 8080
+    
+  clusterIP: None
+  
+  selector:
+    app: databuff
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: databuff
+  annotations:
+   author: "Alessio Romano"
+   mail: "alessio.romano329@edu.unito.it"
+   descr: "datastore  storing GW data written in go"
+   other: "undergrad thesis university of Turin"
+spec:
+  serviceName: databuff
+  replicas: 1
+  selector:
+    matchLabels:
+      app: databuff
+  template:
+    metadata:
+      labels:
+        app: databuff
+    spec:
+      containers:
+      - name: databuff
+        image: romanoa77/databuff:alpha.k8s.1.2
+        #command: ["sleep","infinity"]
+        ports:
+        - containerPort: 8080
+          name: ginport
+        resources:
+          requests:
+           cpu: "2" 
+           memory: "300Mi" 
+          limits:
+           memory: "300Mi"
+        volumeMounts:
+         - name: adata
+           mountPath: /app/appdata
+         - name: gdata 
+           mountPath: /app/data 
+
+      volumes:
+      - name: adata
+        persistentVolumeClaim:
+         claimName: adml
+      - name: gdata  
+        persistentVolumeClaim:
+          claimName: gwdataln 
+
+  
+      
+        

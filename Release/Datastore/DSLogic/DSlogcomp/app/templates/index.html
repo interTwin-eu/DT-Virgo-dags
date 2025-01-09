@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Datastore status</title>
+</head>
+
+<style>
+    p{text-align:center;
+      color:green; 
+      text-transform: uppercase; 
+      font-size:xx-large;
+    
+    }
+    
+</style>
+
+<body>
+
+
+
+<h1>Buffer size {{ size }} bytes</h1>
+<h1>Datastore state {{ state }}</h1>
+<h1>Number of stored files {{nitm}}</h1>
+<br>
+<br>
+
+<p>Operator</p>
+
+<h1>User: {{ user }}</h1>
+<h1>Token: {{ token }}</h1>
+
+<br>
+<br>
+
+<p>Files</p>
+
+<ol>
+
+  {% for file in files %}
+
+    <li>{{ file }}</li>
+
+  {% endfor %}
+
+</ol>
+
+
+
+
+
+</body>
+</html> 
