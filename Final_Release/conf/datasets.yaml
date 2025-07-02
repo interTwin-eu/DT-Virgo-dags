@@ -1,20 +1,22 @@
+#All the datasets listed will be merged on their event id
+
 datasets:
   - path: "/data/datasets/intertwin-dati-aux/gspy_O3a_Scattered_Light_V1_linear_corrs"
-    target: "V1:Hrec_hoft_raw_20000Hz"
-    ch_list: null
+    target: "V1:Hrec_hoft_raw_20000Hz" #target channel
+    ch_list: null #list of strings
     channels:
-      min: null
+      min: null # channels range
       max: null
     events:
-      min: null
+      min: null #event's range
       max: 500
-    processing:
-      minf: 8
+    processing: #filter will be applied in the range [8,500]
+      minf: 8 
       maxf: 500
-      sr: No
-      len: null
-      batch: 100
-      whiten: No 
+      sr: No # resampling
+      len: null # cropped timeseries length
+      batch: 100 # batch for the processing step step
+      whiten: No #whiten timeseries Yes/No
 
   - path: "/data/datasets/intertwin-dati-aux/gspy_O3a_Scattered_Light_V1"
     target: "V1:Hrec_hoft_16384Hz"
