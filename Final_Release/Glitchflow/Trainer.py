@@ -78,21 +78,21 @@ class GlitchTrainer(TorchTrainer):
         coptim_betas: List=[0.9,0.999],
         grad_clip: float=5.0,
         save_name: str='model_checkpoint',
-        acc_threshold: int=16,
-        config: Dict | TrainingConfiguration | None = None,
-        strategy: Literal["ddp", "deepspeed", "horovod"] | None = None,#experimental
+        acc_threshold: int=16, #accuracy threshold
+        config: Dict | TrainingConfiguration | None = None,#dictionary configuration see itwinai
+        strategy: Literal["ddp", "deepspeed", "horovod"] | None = None,#not supported
         checkpoint_path: str = "checkpoints/epoch_{}.pth",
         temp_path: str= "./temp/",
-        logger: Logger | None = None,
-        track_log_freq: int| str = 'batch',
-        acc_freq:int =1,
+        logger: Logger | None = None,#mlflow logger
+        track_log_freq: int| str = 'batch',#tensorboard logger
+        acc_freq:int =1,#metrics logging frequency
         random_seed: int | None = 42,
         name: str | None = None,
         validation_every: int = 0,
         output_channels: int=1,
         tensorboard_root:str='/home/jovyan/runs/',
         model_name:str='Unet_attention_trained',
-        trun_name:str='TRAIN/',
+        trun_name:str='TRAIN/',#tensorboard tag
         **kwargs,
     ) -> None:
         super().__init__(
