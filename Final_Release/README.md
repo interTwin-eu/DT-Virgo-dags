@@ -67,7 +67,7 @@ using the trained model and generating synthetic data. The model is logged to ml
 
 - Data.py: module containing data structures and methods for data manipulations used in the pipeline
 - Dataloader.py: Itwinai's classes for data loading steps. In particular dataset splitting and preprocessing.<br>
-  During the inference step the model is retrieved from the mlflow catalogue.
+  During the inference step the model is retrieved from the mlflow catalogue. <br>
 -Model.py: module containing the neural network definition and the metrics used during the training and inference step.
 -Trainer.py: TorchTrainer class used for model training
 -Inference.py: Module containing the inference step and a class for generating a synthetic dataset  
