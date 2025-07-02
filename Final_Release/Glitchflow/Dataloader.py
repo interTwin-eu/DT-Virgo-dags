@@ -34,7 +34,24 @@ class ReadInfData(DataGetter):
         
         
         
+        """
+        Class for reading data for inference
         
+        data_root: path to data for inference. temp is the default directory created by setup.sh
+        f_means: channel means tensor name
+        f_backr: background dataset tensor name
+        f_test: test dataset tensor name
+        uri: mlflow uri
+        model_name: model name
+        model_version: model version 
+
+        returns a list
+
+        [means,background,test,model,gps,self.model_name]
+
+        gps are read from the dataset
+        
+        """
         self.data_root=data_root
         self.f_means=f_means
         self.f_backgr=f_backgr
@@ -124,9 +141,16 @@ class QTDatasetSplitter(DataSplitter):
             validation_proportion (int | float, optional): _description_. Defaults to 0.0.
             test_proportion (int | float, optional): _description_. Defaults to 0.0.
             rnd_seed (Optional[int], optional): _description_. Defaults to None.
-            images_dataset (str, optional): _description_.
-                Defaults to "data/Image_dataset_synthetic_64x64.pkl".
+            images_dataset (str, optional): path to dataset
+            nev: numbers of rows to select.If 0 will be ignored
+            nchans: number of channels to select   
             name (Optional[str], optional): _description_. Defaults to None.
+
+         returns a list 
+          [train_data, test_data,num_aux_channels,gps_list_test]
+
+          num_aux_channels is the number of channels
+          gps are the gps of the events selected for the test proportion of the dataset
         """
         test=1 - train_proportion
         super().__init__(train_proportion,validation_proportion,test , name)
@@ -228,6 +252,15 @@ class QTProcessor(DataProcessor):
         """
         Args:
             name (str | None, optional): Defaults to None.
+            logger: logger 
+            maxclamp,minclamp: value for dataset clamp
+            maxstrain: strain value for dataset filter
+
+            returns a list
+
+            [train_data_2d_norm,background_norm,test_data_2d_norm, norm_factor,num_aux_channels,channel_means,gps_selected]  
+
+            
         """
         super().__init__(name)
         self.save_parameters(**self.locals2params(locals()))#itwinai backend
@@ -241,14 +274,7 @@ class QTProcessor(DataProcessor):
         
         """Pre-process datasets: rearrange and normalize before training.
 
-        Args:
-            train_dataset (Tuple): training dataset.
-            validation_dataset (Tuple): validation dataset.
-            test_dataset (Any, optional): unused placeholder. Defaults to None.
-
-        Returns:
-            Tuple[torch.Tensor, torch.Tensor, None]: train, validation, and
-                test (placeholder) datasets. Ready to be used for training.
+        
         """
         
        #AUGMENTATION
