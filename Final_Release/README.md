@@ -62,8 +62,8 @@ The Annalisa Package containes the pipeline classes for processing datasets, sca
 
 ## Glitchflow package
 
-The Glitchflow package contains the pipeline classes for training the DT neural network, collecting metrics using mlflow and tensorboard , and then make inference <br>
-for the trained model and generating synthetic glitches . The model is logged to mlflow.
+The Glitchflow package contains the pipeline classes for training the DT neural network, collecting metrics using mlflow and tensorboard , 
+and then make inference for the trained model and generating synthetic glitches . The model is logged to mlflow.
 
 - Data.py: module containing data structures and methods for data manipulations used in the pipeline
 - Dataloader.py: Itwinai's classes for data loading steps. In particular dataset splitting and preprocessing.<br>
