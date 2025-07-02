@@ -425,15 +425,18 @@ def train_decoder(num_epochs,
         criterion1: (CustomLoss) Primary loss function (e.g., L1).
         criterion2: (CustomLoss) Secondary loss function (e.g., L2).
         optimizer: (torch.optim) Optimizer for training.
-        dataloader: (DataLoader) Training data loader.
-        val_loader: (DataLoader) Validation data loader.
+        test_set: (DataLoader) Training data loader.
+        backround_set: (DataLoader) Validation data loader.
         accuracy: (function) Metric to measure performance of the model.
-        
+        channel_means= tensor with means of aux channels
+        snr2_threshold: threshold for accuracy
         checkpoint_path: (str) Path to save checkpoints.
         save_best: (bool) Whether to save the best performing model.
         scheduler: (torch.optim.lr_scheduler) Learning rate scheduler.
-        switch_threshold: (float) Minimum change in loss to consider as progress.
-        patience: (int) Number of epochs to wait before switching loss priority.
+        max_grad_clip: gradient clipping
+        logger: tensorboard logger for logging metrics
+        nacc: logging frequency for epoch
+        acc_batch: batch for test and validation dataloader
     
     Returns:
         loss_plot, val_loss_plot: Training and validation loss history.
