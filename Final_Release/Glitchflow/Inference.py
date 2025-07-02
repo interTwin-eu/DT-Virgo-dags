@@ -29,13 +29,23 @@ import matplotlib.pyplot as plt
     
     
 class GlitchInference (Predictor):
+
+    #Class for inference
+
+    # generated data based on test and background dataset.
+    #log informations on the generated data and logs accuracies
     
-    def __init__(self, v_max:int=25,
+    def __init__(self, v_max:int=25,#clormap norm
                  batch_size:int=2,
                  shuffle:bool='False',
-                 inference_path:str='./temp/',
-                 gen_norm:str|bool=False,n_samp_rows:int=11,logger: Logger | None = None,tensorboard_root:str='/home/jovyan/runs/',
-                 trun_name:str='INF/',track_log_freq: int| str = 'batch',ndebug: int=20) -> None:
+                 inference_path:str='./temp/',#path for saving data 
+                 gen_norm:str|bool=False,#normalize generated data
+                 n_samp_rows:int=11,# number of saved data
+                 logger: Logger | None = None,#mlflow logger
+                 tensorboard_root:str='/home',#tensorboard logger
+                 trun_name:str='INF/',#tensorboard tag
+                 track_log_freq: int| str = 'batch',#logging frequency
+                 ndebug: int=20) -> None:# number of uncleaned data logged
         
         self.v_max=v_max
         self.logger=logger
@@ -392,6 +402,8 @@ class GlitchInference (Predictor):
     
     
 class Glitchflow (Predictor):
+
+    #saves a tensor of generated data
     
     def __init__(self,
                  batch_size:int=2,
