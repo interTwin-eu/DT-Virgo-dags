@@ -78,7 +78,14 @@ and then make inference for the trained model and generating synthetic glitches 
 
  >itwinai exec-pipeline +pipe_key="pipeline name" +pipe_steps=[List containing the steps to execute]
 
-if the pipe_step argument is not given the whole pipeline will be executed.
+if the pipe_step argument is not given the whole pipeline will be executed. For example consider the preprocessing pipeline of the config.yaml file.
+Suppose you want to scan a dataset for correlated channels and the producing a spectrogram dataset, the syntax will be:
+
+>itwinai exec-pipeline +pipe_key=preproc_pipeline +pipe_steps=[Annalisa-scan,QT-dataset]
+
+Instead to train the model
+
+>itwinai exec-pipeline
 
 
 
