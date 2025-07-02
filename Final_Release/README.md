@@ -22,3 +22,6 @@ in gravitational waves interferometer.
 - scikit-image==0.25.2
 - scikit-learn==1.6.1
 - tensorflow==2.19.0
+
+
+https://github.com/ML4GW/ml4gw
