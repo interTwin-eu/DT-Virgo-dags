@@ -35,11 +35,18 @@ from . Annalisa_gpu import *
 class AnnalisaScan(Trainer):
     def __init__(self,params: YamlWrapper,
                  conf:YamlWrapper,
-                 logger: None=None,
                  source:str=''
                  ) -> None:
         
-        self.logger=logger
+        """
+        params: wrapper containing a list with scan.yaml parameters
+        conf: wrapper containing a list with saveconf.yaml parameters
+        source: path to dataset
+        Use this option for a standalone execution or a pipeline processing of an existing dataset
+
+        return a TFrame containing the scanned dataset with channels saved as metadata. 
+        
+        """
         self.params=params.flist
         self.fconf=conf.flist
         self.source=source
@@ -247,7 +254,7 @@ class AnnalisaScan(Trainer):
     
     
 class Preprocess(Trainer):
-    def __init__(self,params: YamlWrapper,conf:YamlWrapper,whiteconf:YamlWrapper,logger: None=None,save:Optional[bool] = False,source:str='',
+    def __init__(self,params: YamlWrapper,conf:YamlWrapper,whiteconf:YamlWrapper,source:str='',
                  chans:Optional[str]|Optional[List]=None,
                  desired_ticks: List=[8, 20, 30, 50, 100, 200, 500],
                  log_base:float=np.e,
@@ -256,10 +263,28 @@ class Preprocess(Trainer):
                  v_max:int=25,
                  v_min:int=0,length_in_s:int=6,save_gr_par:bool=False) -> None:
         
-        self.logger=logger
+        """
+        params: wrapper for process.yaml. A list with parameters will be read
+        conf: wrapper for saveconf.yaml
+        whiteconf: wrapper for whiten.yaml
+        save_gr_par: if True a sample of images will be saved with the dataset. The parameters used will be also saved
+
+        source: path to dataset
+        chans: path to channels or python list
+
+        These parameters are necessary for a standalone use
+
+        desired_ticks: graph frequency ticks
+        log_base log :scale
+        phase: only fpr phase mode
+        num_plots: number of saved images
+        v_max, vmin: colormap normalization
+        length_in_s: time axis length
+        
+        """
         self.params=params.flist
         self.fconf=conf.flist
-        self.save=save
+        
         self.source=source
         self.chans=chans
         self.whiteconf=whiteconf.flist['whiten']
@@ -479,7 +504,7 @@ class Preprocess(Trainer):
         qtf=TFrame(stacked_tensor_2d,rows_list,column_list,gps_list,ann_dict)
         qtf.save(where+"/QT.pt")
         
-        print(self.save_gr_par)
+        
         
         
         
