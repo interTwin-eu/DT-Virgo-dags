@@ -27,8 +27,16 @@ from .Data import (construct_dataframe,
     
     
 class VisualizeData(DataGetter):
-    def __init__(self, data_root:str,data_name:str,tensorboard_root:str) -> None:
+    def __init__(self, data_root:str,data_name:str,tensorboard_root:str) -> int:
+
+        """
+        class for visualize dataset on tensorboard
         
+        
+        data_root: spectrogram dataset location
+        data_name : dataset name
+        tensorboard_root: tensorboard directory
+        """
         self.images_dataset=data_root+data_name
         self.dataname=data_name
         self.tensorboard_root=tensorboard_root
@@ -63,11 +71,21 @@ class VisualizeData(DataGetter):
 
 
 class DtsToTensor(DataGetter):
-    def __init__(self, dataconf: YamlWrapper,
-                 logger: None=None,savepath:str='./datasets/',
+    def __init__(self, 
+                 dataconf: YamlWrapper,
+                 savepath:str='./datasets/',
                  tag:str='new') -> None:
+
+
+                   
         
-        self.logger=logger
+        """
+        Class for loading and processing dataset
+        dataconf: wrapper containg a list rapresenting the datasets.yaml file
+        savepath: processed dataset saving location
+        tag: process dataset will be named unixtimestamp_tag.pt
+        
+        """
         self.datalist=dataconf.flist
         self.savepath=savepath
         
