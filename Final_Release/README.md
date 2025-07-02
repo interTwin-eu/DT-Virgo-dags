@@ -36,6 +36,7 @@ https://www.tensorflow.org/install?hl=it <br>
 Execute setup.sh to create the directory tree in your working directory.
 
 > chmod +x setup.sh
+
 > ./setup.sh
 
 
