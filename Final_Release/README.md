@@ -23,11 +23,11 @@ in gravitational waves interferometer.
 - scikit-learn==1.6.1
 - tensorflow==2.19.0
 
-For itwinai follow the official page
-https://itwinai.readthedocs.io/latest/installation/user_installation.html
+For itwinai follow the official page <br>
+https://itwinai.readthedocs.io/latest/installation/user_installation.html <br>
 
-Other packages that could require the official documentation
-https://github.com/ML4GW/ml4gw
-https://www.mlflow.org/docs/latest/ml/tracking/quickstart
-https://www.tensorflow.org/install?hl=it
+Other packages that could require the official documentation <br>
+https://github.com/ML4GW/ml4gw <br>
+https://www.mlflow.org/docs/latest/ml/tracking/quickstart <br>
+https://www.tensorflow.org/install?hl=it <br>
 
