@@ -44,7 +44,9 @@ class AnnalisaScan(Trainer):
         source: path to dataset
         Use this option for a standalone execution or a pipeline processing of an existing dataset
 
-        return a TFrame containing the scanned dataset with channels saved as metadata. 
+        return a TFrame containing the scanned dataset with channels saved as metadata.
+
+        All results will be saved depending on the saveconf.yaml file
         
         """
         self.params=params.flist
