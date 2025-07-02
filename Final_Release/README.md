@@ -52,6 +52,25 @@ Defines the qtransform during the transormation of the dataset's timeseries into
 - whiten.yaml  <br>
 Defines the timeseries whitening during spectrograms creation
 
+## Annalisa package
+
+The Annalisa Package containes the pipeline classes for processing datasets, scanning them with the Annalisa tool, and transform them into spectrograms. <br>
+
+- Data.py: module containing data structures and methods for data manipulations used in the pipeline
+- Dataloader.py: Itwinai's classes for data loading steps
+- Scanner.py: Itwinai's classes selecting channels containing glitches and producing a dataset made of spectrograms
+
+# Glitchflow package
+
+The Glitchflow package contains the pipeline classes for training the DT neural network, collecting metrics using mlflow and tensorboard, and then make inference <br>
+using the trained model and generating sinthetic data. The model is logged to mlflow.
+
+- Data.py: module containing data structures and methods for data manipulations used in the pipeline
+- Dataloader.py: Itwinai's classes for data loading steps. In particular dataset splitting and preprocessing.<br>
+  During the inference step the model is retrieved from mlflow catalogue.
+
+
+
 
 
 
