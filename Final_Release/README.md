@@ -60,17 +60,25 @@ The Annalisa Package containes the pipeline classes for processing datasets, sca
 - Dataloader.py: Itwinai's classes for data loading steps
 - Scanner.py: Itwinai's classes selecting channels containing glitches and producing a dataset made of spectrograms
 
-# Glitchflow package
+## Glitchflow package
 
 The Glitchflow package contains the pipeline classes for training the DT neural network, collecting metrics using mlflow and tensorboard, and then make inference <br>
-using the trained model and generating synthetic data. The model is logged to mlflow.
+for the trained model and generating synthetic glitches . The model is logged to mlflow.
 
 - Data.py: module containing data structures and methods for data manipulations used in the pipeline
 - Dataloader.py: Itwinai's classes for data loading steps. In particular dataset splitting and preprocessing.<br>
   During the inference step the model is retrieved from the mlflow catalogue. <br>
 - Model.py: module containing the neural network definition and the metrics used during the training and inference step.
-- Trainer.py: TorchTrainer class used for model training
-- Inference.py: Module containing the inference step and a class for generating a synthetic dataset  
+- Trainer.py: TorchTrainer class used for model training. See itwinai documentation for more details.
+- Inference.py: Module containing the inference step and a class for generating a synthetic dataset
+
+ ## Pipeline execution
+
+ To execute a pipeline use itwinai syntax. Assuming the working directory is the same of the config.yaml file
+
+ >itwinai exec-pipeline +pipe_key="pipeline name" +pipe_steps=[List containing the steps to execute]
+
+if the pipe_step argument is not given the whole pipeline will be executed.
 
 
 
