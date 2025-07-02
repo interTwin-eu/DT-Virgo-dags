@@ -31,3 +31,12 @@ https://github.com/ML4GW/ml4gw <br>
 https://www.mlflow.org/docs/latest/ml/tracking/quickstart <br>
 https://www.tensorflow.org/install?hl=it <br>
 
+## Installation and configuration
+
+Execute setup.sh to create the directory tree in your working directory.
+
+> chmod +x setup.sh
+> ./setup.sh
+
+
+
