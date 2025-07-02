@@ -39,6 +39,23 @@ Execute setup.sh to create the directory tree in your working directory.
 
 > ./setup.sh
 
+The saveconf.yaml file contained inside the conf directory can be used to adjust the directory tree to the user setup.
+
+The other files contained inside the conf directory define the processing pipeline parameters
+
+- datasets.yaml <br>
+Defines the locations of the datasets and their processing parameters <br>
+- scan.yaml <br>
+Defines the parameters for Annalisa <br>
+- process.yaml <br>
+Defines the qtransform during the transormation of the dataset's timeseries into spectrograms
+- whiten.yaml  <br>
+Defines the timeseries whitening during spectrograms creation
+
+
+
+
+
 
 
 
