@@ -1,8 +1,8 @@
 #All the datasets listed will be merged on their event id
 
 datasets:
-  - path: "/data/datasets/intertwin-dati-aux/gspy_O3a_Scattered_Light_V1_linear_corrs"
-    target: "V1:Hrec_hoft_raw_20000Hz" #target channel
+  - path: "path to dataset"
+    target: "target channel name" #target channel
     ch_list: null #list of strings
     channels:
       min: null # channels range
@@ -18,8 +18,8 @@ datasets:
       batch: 100 # batch for the processing step step
       whiten: No #whiten timeseries Yes/No
 
-  - path: "/data/datasets/intertwin-dati-aux/gspy_O3a_Scattered_Light_V1"
-    target: "V1:Hrec_hoft_16384Hz"
+  - path: "path to dataset"
+    target: "target channel name" #target channel
     ch_list: null
     channels:
       min: null
