@@ -98,17 +98,11 @@ Instead to train the model
 
 
     training_pipeline:
-      _target_: itwinai.pipeline.Pipeline
-      steps:
-       Splitter:
-        _target_: Glitchflow.Dataloader.QTDatasetSplitter
-        train_proportion: 0.9
-        images_dataset: /path to dataset
-       Processor:  
-        _target_: Glitchflow.Dataloader.QTProcessor
-        maxstrain: 6
+      
        Trainer:
         _target_: Glitchflow.Trainer.GlitchTrainer
+
+        #training parameters section
         num_epochs: 100
         acc_freq: 1
         grad_clip: 5.0
@@ -117,18 +111,19 @@ Instead to train the model
                      - 0.999
         config: 
          _target_: itwinai.torch.config.TrainingConfiguration
-        batch_size: 10
+         batch_size: 10
         
-        optim_lr: 1.0e-4
+         optim_lr: 1.0e-4
         
-        optim_momentum: 0.9
-        optim_weight_decay: 1e-4
-        
-        cschd_mode: 'min'
-        cschd_patience: 7
-        cschd_min_lr: 1e-7
-        cschd_verbose: Yes 
-        cschd_factor: 0.5
+         optim_momentum: 0.9
+         optim_weight_decay: 1e-4
+         cschd_mode: 'min'
+         cschd_patience: 7
+         cschd_min_lr: 1e-7
+         cschd_verbose: Yes 
+         cschd_factor: 0.5
+        #logging section
+        tensorboard_root: '/home'
         logger: 
          _target_: itwinai.loggers.MLFlowLogger
          experiment_name: 
