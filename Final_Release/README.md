@@ -129,6 +129,29 @@ and here we have the pipeline definition for the training section
 
 Parameters  are defined using the syntax of a yaml file. The _target_ expression is used when you need to pass a python class.
 
+##Logging
+
+The application uses Mlflow and Tensorboard for logging. For installation refers to the official documentation. <br>
+In case of a local setup the python installation should be enough. To launch mlflow 
+
+> mlflow server --backend-store-uri sqlite:///mlflow.db --default-artifact-root ./artifacts --host ip adress --port 5005
+
+- --backend-store-uri: the database that will be used to store data. sqlite is the default db but other databases can  be used.
+- --default-artifact-root: mlflow directory where data will be stored. Logged model will be found here
+- --host: the ip adress of the server. Put it to 0.0.0.0 if you work behind a proxy.
+- --port: 5005 is the default port.
+
+To launch tensorboard
+
+> tensorboard --logdir logdir --host ip --port 6000
+
+- --logdir: tensorboard root directory.
+- --host: the ip adress of the server. Put it to 0.0.0.0 if you work behind a proxy.
+- --port: 6000 is the default port.
+
+
+
+
 
 
 
