@@ -96,27 +96,24 @@ Instead to train the model
 
 >itwinai exec-pipeline
 
+and here we have the pipeline definition for the training section
 
-    training_pipeline:
+     training_pipeline:
       
        Trainer:
         _target_: Glitchflow.Trainer.GlitchTrainer
-
         #training parameters section
         num_epochs: 100
-        acc_freq: 1
-        grad_clip: 5.0
-        coptim_betas:  
-                     - 0.9
-                     - 0.999
+        acc_freq: 1 # accuracy logging frequency
         config: 
-         _target_: itwinai.torch.config.TrainingConfiguration
+         #passed to itwinai configuration class 
+         _target_: itwinai.torch.config.TrainingConfiguration 
          batch_size: 10
-        
+         #optimizer parameters
          optim_lr: 1.0e-4
-        
          optim_momentum: 0.9
          optim_weight_decay: 1e-4
+         #scheduler parameters
          cschd_mode: 'min'
          cschd_patience: 7
          cschd_min_lr: 1e-7
@@ -129,6 +126,8 @@ Instead to train the model
          experiment_name: 
          log_freq: 'batch'
          tracking_uri: 'http://localhost:5005'
+
+Parameters  are defined using the syntax of a yaml file. The _target_ expression is used when you need to pass a python class.
 
 
 
