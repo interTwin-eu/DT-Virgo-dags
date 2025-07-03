@@ -105,7 +105,7 @@ Defines the locations of the datasets and their processing parameters <br>
 - scan.yaml <br>
 Defines the parameters for Annalisa <br>
 - process.yaml <br>
-Defines the qtransform during the transormation of the dataset's timeseries into spectrograms
+Defines the qtransform during the transformation of the dataset's timeseries into spectrograms
 - whiten.yaml  <br>
 Defines the timeseries whitening during spectrograms creation
 
@@ -126,7 +126,9 @@ The ANNALISA Package containes the pipeline classes for processing datasets and 
     - Loading data for inference
     - Spectrogram dataset visualization utility.
 
-- Scanner.py: Itwinai's classes selecting relevant channels for network training by analyzing time-frequency data (Q-Transform) to find correlations measured as coincident spikes in signal energy above a threshold. Parameters can be defined via scan.yaml file. Results are stored locally, path can be configured by user. 
+- Scanner.py: Itwinai's classes selecting relevant channels for network training by analyzing time-frequency data (Q-Transform) to find correlations measured as  coincident spikes in signal energy above a threshold. Parameters can be defined via scan.yaml file. Results are stored locally, path can be configured by user.
+
+ 
 
 ## GlitchFlow package
 
