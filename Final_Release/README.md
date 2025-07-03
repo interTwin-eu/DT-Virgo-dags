@@ -222,25 +222,26 @@ Examples are reported in the figures below:
 <p align="center">
   <img src="https://github.com/user-attachments/assets/13b645f5-1ce8-415d-8eb0-f9ca45d70eeb" alt="Training accuracy">
   <br>
-  Figure 3: Training accuracy.
+  Figure 3: Training accuracy as a function of learning epochs for different values for fixed $SNR^2$ threshold.
 </p>
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/a7d37a27-4f58-47a3-8635-7ee422c29b1f" alt="Denoising inference">
   <br>
-  Figure 4: Denoising inference.
+  Figure 4:On the left: Denoising inference. Real, generated spectrograms of data used for inference and their absolute difference.
+On the center and right: Denoising and vetoing accuracy as a function of different $SNR^2$ threshold after training.
 </p>
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/ed0d994e-0903-48de-ab5e-cdee1978ad77" alt="Training loss">
   <br>
-  Figure 5: Training loss.
+  Figure 5: Training and validation loss as a funciton of learning epochs.
 </p>
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/884447df-25b0-41bc-8fb7-4f616e670581" alt="Veto metadata">
   <br>
-  Figure 6: Veto metadata.
+  Figure 6: Denoising metadata. In the table are reported the gps time of the data used for inference, a binary flag to indicate if the data was succesfully cleaned, the maximum $SNR^2$ for uncleaned data, and the area (in pixels) of residual glitch after (failed) cleaning.
 </p>
 
 
