@@ -127,7 +127,7 @@ The ANNALISA Package containes the pipeline classes for processing datasets and 
     - Spectrogram dataset visualization utility.
 
 - Scanner.py: Itwinai's class selecting relevant channels for network training by analyzing time-frequency data (Q-Transform) to find correlations measured as  coincident spikes in signal energy above a threshold. Parameters can be defined via scan.yaml file. Results are stored locally, path can be configured by user.
-- Spectrogram.py: Itwinai's class for transforming a dataset of timeseries into a dataset of spectrograms via Q-transform.  Parameters can be defined via process.yaml file for the Q-transform and for the whitening of data the whiten.yaml file. Results are stored locally, path can be configured by user.
+- Spectrogram.py: Itwinai's class for transforming a dataset of timeseries into a dataset of spectrograms via Q-transform.  Parameters can be defined via process.yaml file for the Q-transform and for the whitening of data the whiten.yaml file is read. Results are stored locally, path can be configured by user.
 
  
 
@@ -252,7 +252,7 @@ The second step is defined with the same logic.
         #training parameters section
         num_epochs: 100
         acc_freq: 1 # accuracy logging frequency
-but others are python classes. We configure the always with _target_
+but others are python classes. We configure it  with _target_ like in the previous steps
 
      config: 
          #passed to itwinai configuration class 
