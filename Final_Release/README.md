@@ -189,6 +189,8 @@ Parameters  are defined using the syntax of a yaml file. The _target_ expression
 
 ## Logging
 
+### MLFlow
+
 The application uses MLFlow and TensorBoard for logging. For installation refers to the official documentation. <br>
 In case of a local setup the python installation should be enough. To launch MLFlow:
 
@@ -199,6 +201,8 @@ In case of a local setup the python installation should be enough. To launch MLF
 - --host: the ip adress of the server. Put it to 0.0.0.0 if you work behind a proxy.
 - --port: 5005 is the default port.
 
+### TensorBoard
+
 To launch TensorBoard:
 
 > tensorboard --logdir logdir --host ip --port 6000
@@ -207,6 +211,37 @@ To launch TensorBoard:
 - --host: the ip adress of the server. Put it to 0.0.0.0 if you work behind a proxy.
 - --port: 6000 is the default port.
 
+User can launch TensorBoard and navigate through the logged events, which are categorized by run and timestamp, allowing for detailed visualization and analysis of the inference results comprising of:
+-  images of the real, generated, and cleaned data
+-  Metadata containing veto flag information, organized by the GPS time of the analyzed data
+-  metadata for any data that failed to be cleaned is recorded, including the area and Signal-to-Noise Ratio (SNR) of glitches still visible after cleaning
+-  accuracy metrics for both denosing and vetoing task
+
+Examples are reported in the figures below:
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/13b645f5-1ce8-415d-8eb0-f9ca45d70eeb" alt="Training accuracy">
+  <br>
+  Figure 3: Training accuracy.
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/a7d37a27-4f58-47a3-8635-7ee422c29b1f" alt="Denoising inference">
+  <br>
+  Figure 4: Denoising inference.
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/ed0d994e-0903-48de-ab5e-cdee1978ad77" alt="Training loss">
+  <br>
+  Figure 5: Training loss.
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/884447df-25b0-41bc-8fb7-4f616e670581" alt="Veto metadata">
+  <br>
+  Figure 6: Veto metadata.
+</p>
 
 
 
