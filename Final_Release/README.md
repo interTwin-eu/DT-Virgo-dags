@@ -150,13 +150,13 @@ Suppose you want to preprocess  a dataset, search for correlated channels and th
 
 >itwinai exec-pipeline +pipe_key=preproc_pipeline 
 
-where preproc_pipeline is the pipeline's name. Itwinai will execute,see the config,yaml file:
+where preproc_pipeline is the pipeline's name. Itwinai will execute the following steps,see the config,yaml file:
 
 - The preprocessing step named Data-processor
 - A scan with Annalisa, the step named Annalisa-scan
 - The spectrogram production step named QT-dataset
 
-Instead if you have a preprocessed dataset you don't need to rewrite the config.yaml file just type
+Instead the dataset has been been already preprocessed, you need only the latter two steps. So type 
 
 > itwinai exec-pipeline +pipe_key=preproc_pipeline +pipe_steps=[Annalisa-scan,QT-dataset]
 
