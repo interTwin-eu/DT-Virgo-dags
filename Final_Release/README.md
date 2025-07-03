@@ -146,15 +146,27 @@ The GlitchFlow package contains the pipeline classes for training the DT's Neura
  >itwinai exec-pipeline +pipe_key="pipeline name" +pipe_steps=[List containing the steps to execute]
 
 if the pipe_step argument is not given the whole pipeline will be executed. For example consider the preprocessing pipeline of the config.yaml file.
-Suppose you want to scan a dataset for correlated channels and the producing a spectrogram dataset, the syntax will be:
+Suppose you want to preprocess  a dataset, search for correlated channels and then producing a spectrogram dataset, the syntax will be:
 
->itwinai exec-pipeline +pipe_key=preproc_pipeline +pipe_steps=[Annalisa-scan,QT-dataset]
+>itwinai exec-pipeline +pipe_key=preproc_pipeline 
 
-Instead to train the model:
+where preproc_pipeline is the pipeline's name. Itwinai will execute,see the config,yaml file:
+
+- The preprocessing step named Data-processor
+- A scan with Annalisa, the step named Annalisa-scan
+- The spectrogram production step named QT-dataset
+
+Instead if you have a preprocessed dataset you don't need to rewrite the config.yaml file just type
+
+> itwinai exec-pipeline +pipe_key=preproc_pipeline +pipe_steps=[Annalisa-scan,QT-dataset]
+
+where we have provided a list of step for execution.
+
+For the training of the model the syntax is simplified
 
 >itwinai exec-pipeline
 
-and here we have the pipeline definition for the training section
+because the pipeline named training_pipeline is considered the default. 
 
      training_pipeline:
       
