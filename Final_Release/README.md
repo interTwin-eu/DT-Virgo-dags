@@ -1,7 +1,55 @@
+# Index
+* [DT Virgo Use Case](#dt-virgo-use-case)
+    * [The Training DT Subsystem](#the-training-dt-subsystem)
+    * [The Inference DT Subsystem](#the-inference-dt-subsystem)
+* [Technical documentation](#technical-documentation)
+    * [Requirements](#requirements)
+    * [Installation and configuration](#installation-and-configuration)
+    * [ANNALISA package](#annalisa-package)
+    * [Glitchflow package](#glitchflow-package)
+    * [Pipeline execution](#pipeline-execution)
+    * [Logging](#logging)
+ 
 # DT Virgo Use Case
 
-This repository contains the code for the Glitchflow digital twin for simulating transient noise 
-in gravitational waves interferometer.
+The sensitivity of Gravitational Wave (GW) interferometers is limited by noise. We have been using Generative Neural Networks (GenNNs) to produce a Digital Twin (DT) of the Virgo interferometer to realistically simulate transient noise in the detector. We have used the GenNN-based DT to generate synthetic strain data (a channel that measures the deformation induced by the passage of a gravitational wave). Furthermore, the detector is equipped with sensors that monitor the status of the detector’s subsystems as well as the environmental conditions (wind, temperature, seismic motions) and whose output is saved in the so-called auxiliary channels. Therefore, in a second phase, also from the perspective of the Einstein Telescope, we will use the trained model to characterise the noise and optimise the use of auxiliary channels in vetoing and denoising the signal in low-latency searches, i.e., those data analysis pipelines that search for transient astrophysical signals in almost real time. This will allow the low-latency searches (not part of the DT) to send out more reliable triggers to observatories for multi-messenger astronomy.	
+Figure 1 shows the high-level architecture of the DT. Data streams from auxiliary channels are used to find the transfer function of the system producing non-linear noise in the detector output. The output function compares the simulated and the real signals in order to issue a veto decision (to further process incoming data in low-latency searches) or to remove the noise contribution from the real signal (denoising).
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/8a191145-b771-4ee1-9ba0-a687301e48c2" alt="High-level architecture of the DT">
+  <br>
+  Figure 1: High-level architecture of the DT.
+</p>
+
+Figure 2 shows the System Context diagram of the DT for the veto and denoising pipeline. 
+Two main subsystems characterise the DT architecture: the Training DT subsystem and the Inference DT subsystem. The Training DT subsystem is responsible for the periodical re-training of the DT model on a buffered subsample of the most recent Virgo data. The DT model needs to be updated to reflect the current status of the interferometer, so continuous retraining of the GenNN needs to be carried out. tThe Inference DT subsystem is responsible for the low-latency vetoing and denoising of the detector’s datastream.
+All modules within both subsystems are implemented as itwinai plugins. Itwinai offers several key features that are beneficial to the DT, including distributed training capabilities, a robust logging and model catalog system, enhanced code reusability, and a user-friendly configuration interface for pipelines.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/968a9d39-ceda-4106-adff-2729dcea3d0e" alt="System context diagram of the DT.">
+  <br>
+  Figure 2: System context diagram of the DT.
+</p>
+
+## The Training DT Subsystem
+
+Operators initiate the **Training Subsystem**. The ANNALISA module first selects relevant channels for network training by analyzing time-frequency data (Q-Transform) to find correlations and coincident spikes in signal energy above a threshold.
+
+After this initial step, operators preprocess data retrieved from the Virgo Data Lake. ANNALISA handles this preprocessing, which includes data resampling, whitening, spectrogram generation, image cropping, and loading into a custom PyTorch dataloader. This dataloader then feeds a Generative Neural Network (GenNN) during training.
+
+The chosen neural network is a **Convolutional U-net**, featuring residual blocks and attention gates with enhanced skip connections for better data complexity capture. Other architectures are available for the user to experiment. GlitchFlow manages both the model definition and training. As the model trains, its weights and performance metrics are systematically logged into a dedicated model registry on MLFlow, making it accessible for the Inference Subsystem. Itwinai facilitates this logging and offloading to computing infrastructure during training.
+
+
+## The Inference DT Subsystem
+
+Users, typically GW detector characterization or data analysis experts, activate the **Inference Subsystem**. They start by selecting the data for analysis, which then undergoes the same preprocessing steps as those applied during the training phase. Subsequently, a trained model is loaded from the model catalog and utilized to perform inference on the chosen data.
+
+The output of this process comprises "clean" data, ideally free of glitches, and metadata containing veto flagging information, which identifies glitch instances. Both the cleaned data and metadata are logged, offering a complete record of the denoising and vetoing operations.
+
+Logged details, including images of the real, generated, and cleaned data, are accessible on **TensorBoard**. Metadata containing veto flag information, organized by the GPS time of the analyzed data, is also logged. Furthermore, metadata for any data that failed to be cleaned is recorded, including the area and Signal-to-Noise Ratio (SNR) of glitches still visible after cleaning. To access this information, users can launch TensorBoard and navigate through the logged events, which are categorized by run and timestamp, allowing for detailed visualization and analysis of the inference results. The entire pipeline, encompassing data selection, inference, and logging, is configurable via a YAML file, enabling users to specify modules to execute, preprocessing parameters, dataset specifics, network architecture, and paths for saving results.
+
+# Technical documentation
+The following shows how to set up and run the  Virgo DT pipeline.
 
 ## Requirements
 
@@ -61,25 +109,35 @@ Defines the qtransform during the transormation of the dataset's timeseries into
 - whiten.yaml  <br>
 Defines the timeseries whitening during spectrograms creation
 
-## Annalisa package
+## ANNALISA package
 
-The Annalisa Package containes the pipeline classes for processing datasets, scanning them with the Annalisa tool, and transform them into spectrograms. <br>
+The ANNALISA Package containes the pipeline classes for processing datasets, scanning them with the Annalisa tool, and transform them into spectrograms. <br>
 
-- Data.py: module containing data structures and methods for data manipulations used in the pipeline
-- Dataloader.py: Itwinai's classes for data loading steps
-- Scanner.py: Itwinai's classes selecting channels containing glitches and producing a dataset made of spectrograms
+- Data.py: module containing data structures and methods for data preprocessing used in the pipeline such as:
+    - The TFrame class used for reading pytorch tensors and relative metadata during the pipeline workflow
+    - Method for reading and processing gw data
+    - Methods and classes for working with different data format like yaml and json
+    - Methods used for preprocessing the dataset before model training
+    - Various matplotlib functions to plot graphs
+
+- Dataloader.py: Itwinai's classes for data loading steps. It provides:
+    - Processing of gw data
+    - Dataset splitting and preprocessing before training
+    - Loading data for inference
+    - Spectrogram dataset visualization utility.
+
+- Scanner.py: Itwinai's classes selecting channels containing glitches and producing a dataset made of spectrograms. Parameters can be defined via config.yaml file. Results are stored locally, path can be configured by user. 
 
 ## Glitchflow package
 
-The Glitchflow package contains the pipeline classes for training the DT neural network, collecting metrics using mlflow and tensorboard , 
-and then make inference for the trained model and generating synthetic glitches . The model is logged to mlflow.
+The Glitchflow package contains the pipeline classes for training the DT's Neural Network, collecting metrics using MLflow and TensorBoard, making inferences with the trained model, and generating synthetic glitches. The model is logged to MLflow. The package contains:
 
-- Data.py: module containing data structures and methods for data manipulations used in the pipeline
+- Data.py: same as for ANNALISA
 - Dataloader.py: Itwinai's classes for data loading steps. In particular dataset splitting and preprocessing.<br>
-  During the inference step the model is retrieved from the mlflow catalogue. <br>
-- Model.py: module containing the neural network definition and the metrics used during the training and inference step.
+  During the inference step the model is retrieved from the MLFlow catalogue. <br>
+- Model.py: module containing the Neural Network architecture definition and the metrics used during the training and inference step.
 - Trainer.py: TorchTrainer class used for model training. See itwinai documentation for more details.
-- Inference.py: Module containing the inference step and a class for generating a synthetic dataset
+- Inference.py: Module containing the inference step and a class for generating a synthetic dataset.
 
  ## Pipeline execution
 
@@ -92,7 +150,7 @@ Suppose you want to scan a dataset for correlated channels and the producing a s
 
 >itwinai exec-pipeline +pipe_key=preproc_pipeline +pipe_steps=[Annalisa-scan,QT-dataset]
 
-Instead to train the model
+Instead to train the model:
 
 >itwinai exec-pipeline
 
@@ -131,17 +189,17 @@ Parameters  are defined using the syntax of a yaml file. The _target_ expression
 
 ## Logging
 
-The application uses Mlflow and Tensorboard for logging. For installation refers to the official documentation. <br>
-In case of a local setup the python installation should be enough. To launch mlflow 
+The application uses MLFlow and TensorBoard for logging. For installation refers to the official documentation. <br>
+In case of a local setup the python installation should be enough. To launch MLFlow:
 
 > mlflow server --backend-store-uri sqlite:///mlflow.db --default-artifact-root ./artifacts --host ip adress --port 5005
 
 - --backend-store-uri: the database that will be used to store data. sqlite is the default db but other databases can  be used.
-- --default-artifact-root: mlflow directory where data will be stored. Logged model will be found here
+- --default-artifact-root: MLFlow directory where data will be stored. Logged model will be found here
 - --host: the ip adress of the server. Put it to 0.0.0.0 if you work behind a proxy.
 - --port: 5005 is the default port.
 
-To launch tensorboard
+To launch TensorBoard:
 
 > tensorboard --logdir logdir --host ip --port 6000
 
