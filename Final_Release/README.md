@@ -139,7 +139,7 @@ The GlitchFlow package contains the pipeline classes for training the DT's Neura
 - Dataloader.py: Itwinai's classes for data loading steps. In particular dataset splitting and preprocessing.<br>
   During the inference step the model is retrieved from the MLFlow catalogue. <br>
 - Model.py: module containing the Neural Network architecture definition and the metrics used during the training and inference step.
-- Trainer.py: TorchTrainer class used for model training. See itwinai documentation for more details.
+- Trainer.py: TorchTrainer class used for model training. See itwinai documentation for more details https://itwinai.readthedocs.io/latest/how-it-works/training/training.html#itwinai-torchtrainer.
 - Inference.py: Module containing the inference step and a class for generating a synthetic dataset.
 
  ## Pipeline execution
