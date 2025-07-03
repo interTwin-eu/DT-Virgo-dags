@@ -129,7 +129,7 @@ and here we have the pipeline definition for the training section
 
 Parameters  are defined using the syntax of a yaml file. The _target_ expression is used when you need to pass a python class.
 
-##Logging
+## Logging
 
 The application uses Mlflow and Tensorboard for logging. For installation refers to the official documentation. <br>
 In case of a local setup the python installation should be enough. To launch mlflow 
