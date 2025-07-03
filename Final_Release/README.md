@@ -39,6 +39,13 @@ Execute setup.sh to create the directory tree in your working directory.
 
 > ./setup.sh
 
+    .
+    ├── current dir/
+        └── annalisarun
+        └── datasets
+        └── QTdatasets
+        └── temp
+
 The saveconf.yaml file contained inside the conf directory can be used to adjust the directory tree to the user setup.
 
 The other files contained inside the conf directory define the processing pipeline parameters
