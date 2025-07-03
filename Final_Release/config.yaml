@@ -101,7 +101,7 @@ preproc_pipeline:
       source: 'path to dataset '
       
     QT-dataset:
-     _target_: Annalisa.Scanner.Preprocess
+     _target_: Annalisa.Spectrogram.Preprocess
      params: 
         _target_: Annalisa.Data.YamlWrapper
         fname: 'process.yaml'
