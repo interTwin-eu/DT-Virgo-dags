@@ -268,10 +268,11 @@ class GlitchInference (Predictor):
             
         
         
-        
+        #####generate table######
+        #####generate table######
         print(generated_test.shape)
         diff=torch.abs(generated_test-test[:,0,:,:].unsqueeze(1))
-        
+        #sum pixels
         npix=torch.sum(diff, dim=(2, 3)) #add mask
         
     
@@ -287,7 +288,7 @@ class GlitchInference (Predictor):
         
         #print(torch.sum(abs_difference_test, dim=(2, 3)))  
         snr2=abs_difference_test.amax(dim=(1,2,3))
-        npix=torch.sum(abs_difference_test, dim=(2, 3)) #add mask
+        
         
         
         cluster_mask= self.glitch_classifier(clusters_abs_test)
