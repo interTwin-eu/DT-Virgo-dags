@@ -97,6 +97,51 @@ Instead to train the model
 >itwinai exec-pipeline
 
 
+training_pipeline:
+  _target_: itwinai.pipeline.Pipeline
+  steps:
+    Splitter:
+      _target_: Glitchflow.Dataloader.QTDatasetSplitter
+      train_proportion: 0.9
+      nev: 0
+      nchans: 9
+      images_dataset: 
+      
+      
+    Processor:  
+      _target_: Glitchflow.Dataloader.QTProcessor
+      maxstrain: 6
+      
+    Trainer:
+      _target_: Glitchflow.Trainer.GlitchTrainer
+      num_epochs: 100
+      acc_threshold: 16
+      acc_freq: 1
+      grad_clip: 5.0
+      coptim_betas:  
+                     - 0.9
+                     - 0.999
+      config: 
+        _target_: itwinai.torch.config.TrainingConfiguration
+        batch_size: 10
+        
+        optim_lr: 1.0e-4
+        
+        optim_momentum: 0.9
+        optim_weight_decay: 1e-4
+        
+        cschd_mode: 'min'
+        cschd_patience: 7
+        cschd_min_lr: 1e-7
+        cschd_verbose: Yes 
+        cschd_factor: 0.5
+      logger: 
+        _target_: itwinai.loggers.MLFlowLogger
+        experiment_name: 
+        log_freq: 'batch'
+        tracking_uri: 'http://localhost:5005'
+
+
 
 
 
