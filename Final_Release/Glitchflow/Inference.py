@@ -273,11 +273,11 @@ class GlitchInference (Predictor):
         print(generated_test.shape)
         diff=torch.abs(generated_test-test[:,0,:,:].unsqueeze(1))
         #sum pixels
-        npix=torch.sum(diff, dim=(2, 3)) #add mask
+        
         
     
         abs_difference_test=diff*norm_factor
-        
+        npix=(abs_difference_test>16).sum(dim=(-2,-1))
         #torch.abs((generated_test-test[:,0,:,:].unsqueeze(1))*norm_factor)
         
         cluster_test = ClusterAboveThreshold(16, 1).to('cpu')
@@ -301,7 +301,7 @@ class GlitchInference (Predictor):
         
         table_md = "| Step | GPS | Cleaned | SNR^2 | N. Pixel |\n|----|----|-------|----------|--------|\n"
         for id_value, bool_value, snr2_val, pix_val in zip(gps,cluster_mask,snr2,npix):
-            table_md += f"| {idstep} |{id_value} | {'No' if bool_value else 'Yes'} | {snr2_val: .1f} | {pix_val.int().item() if bool_value else 0 } |\n"
+            table_md += f"| {idstep} |{id_value} | {'No' if bool_value else 'Yes'} | {snr2_val: .1f} | {pix_val.item() if bool_value else 0 } |\n"
             idstep+=1
         
         tracking_logger.log(table_md,f'Cleaned Batch',kind="text")
