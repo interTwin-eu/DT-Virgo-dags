@@ -33,7 +33,7 @@ All modules within both subsystems are implemented as itwinai plugins. Itwinai o
 
 ## The Training DT Subsystem
 
-Operators initiate the **Training Subsystem**. The ANNALISA module first selects relevant channels for network training by analyzing time-frequency data (Q-Transform) to find correlations and coincident spikes in signal energy above a threshold.
+Operators initiate the **Training Subsystem**. The ANNALISA module first selects relevant channels for network training by analyzing time-frequency data (Q-Transform) to find correlations measured as coincident spikes in signal energy above a threshold.
 
 After this initial step, operators preprocess data retrieved from the Virgo Data Lake. ANNALISA handles this preprocessing, which includes data resampling, whitening, spectrogram generation, image cropping, and loading into a custom PyTorch dataloader. This dataloader then feeds a Generative Neural Network (GenNN) during training.
 
@@ -111,14 +111,14 @@ Defines the timeseries whitening during spectrograms creation
 
 ## ANNALISA package
 
-The ANNALISA Package containes the pipeline classes for processing datasets, scanning them with the Annalisa tool, and transform them into spectrograms. <br>
+The ANNALISA Package containes the pipeline classes for processing datasets and compute correlations for channel selection. The package includes:<br>
 
 - Data.py: module containing data structures and methods for data preprocessing used in the pipeline such as:
     - The TFrame class used for reading pytorch tensors and relative metadata during the pipeline workflow
     - Method for reading and processing gw data
     - Methods and classes for working with different data format like yaml and json
     - Methods used for preprocessing the dataset before model training
-    - Various matplotlib functions to plot graphs
+    - Various custom matplotlib plotting functions 
 
 - Dataloader.py: Itwinai's classes for data loading steps. It provides:
     - Processing of gw data
@@ -126,11 +126,11 @@ The ANNALISA Package containes the pipeline classes for processing datasets, sca
     - Loading data for inference
     - Spectrogram dataset visualization utility.
 
-- Scanner.py: Itwinai's classes selecting channels containing glitches and producing a dataset made of spectrograms. Parameters can be defined via config.yaml file. Results are stored locally, path can be configured by user. 
+- Scanner.py: Itwinai's classes selecting relevant channels for network training by analyzing time-frequency data (Q-Transform) to find correlations measured as coincident spikes in signal energy above a threshold. Parameters can be defined via scan.yaml file. Results are stored locally, path can be configured by user. 
 
-## Glitchflow package
+## GlitchFlow package
 
-The Glitchflow package contains the pipeline classes for training the DT's Neural Network, collecting metrics using MLflow and TensorBoard, making inferences with the trained model, and generating synthetic glitches. The model is logged to MLflow. The package contains:
+The GlitchFlow package contains the pipeline classes for training the DT's Neural Network, collecting metrics using MLflow and TensorBoard, making inferences with the trained model, and generating synthetic glitches. The model is logged to MLflow. The package contains:
 
 - Data.py: same as for ANNALISA
 - Dataloader.py: Itwinai's classes for data loading steps. In particular dataset splitting and preprocessing.<br>
