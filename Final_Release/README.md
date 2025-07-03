@@ -39,12 +39,14 @@ Execute setup.sh to create the directory tree in your working directory.
 
 > ./setup.sh
 
+Then your current directory will look like
+
     .
     ├── current dir/
-        └── annalisarun
-        └── datasets
-        └── QTdatasets
-        └── temp
+        └── annalisarun  #Saved Annalisa Data
+        └── datasets     #Processed dataset
+        └── QTdatasets   #Spectrograms
+        └── temp         #Data saved during training
 
 The saveconf.yaml file contained inside the conf directory can be used to adjust the directory tree to the user setup.
 
