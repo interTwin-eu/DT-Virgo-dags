@@ -171,9 +171,22 @@ For the training of the model the syntax is simplified
 
 because the pipeline named training_pipeline is considered the default. 
 
+Now we analyze how a pipeline written inside the config.yaml is configured.
+We consider the training pipeline.
+
+
 
      training_pipeline:
-        ...
+     _target_: itwinai.pipeline.Pipeline
+
+       Splitter:
+        _target_: Glitchflow.Dataloader.QTDatasetSplitter
+        train_proportion: 0.9
+        images_dataset: '/home/mydataset.pt'
+
+       Processor:  
+        _target_: Glitchflow.Dataloader.QTProcessor 
+        
        Trainer:
         _target_: Glitchflow.Trainer.GlitchTrainer
         #training parameters section
@@ -201,7 +214,59 @@ because the pipeline named training_pipeline is considered the default.
          log_freq: 'batch'
          tracking_uri: 'http://localhost:5005'
 
-Parameters  are defined using the syntax of a yaml file. The _target_ expression is used when you need to pass a python class.
+         
+
+Pipelines are defined using the yaml markup language. The first two lines are 
+
+    training_pipeline:
+     _target_: itwinai.pipeline.Pipeline
+
+in the first line we define the name of the pipeline that will be used by the command line . 
+The second line ,the target _directive_ is standard and we will always use it to define the pipeline as an itwinai object.
+The _target_ directive defines a python object in general.  <br>
+
+Now we define the first step of the pipeline:
+
+    Splitter:
+      _target_: Glitchflow.Dataloader.QTDatasetSplitter
+      train_proportion: 0.9
+      images_dataset: '/home/mydataset.pt'
+
+The first two lines follows the same logic used to define the pipeline. The name followed by the _target_ directive wich indicates
+a class of the Glitchflow package. QTDatasetSplitter will split data into the train and test subsets and pass them to the next step.
+
+Next we define some parameters using the yaml syntax
+
+      train_proportion: 0.9
+      images_dataset: '/home/mydataset.pt'
+We have defined the the train proportion of the dataset and its path. These parameters will be passed to the class constructor.
+The second step is defined with the same logic.
+
+      Processor:  
+       _target_: Glitchflow.Dataloader.QTProcessor 
+
+ The training step has more parameters. Some of them are simple scalars
+
+     Trainer:
+        _target_: Glitchflow.Trainer.GlitchTrainer
+        #training parameters section
+        num_epochs: 100
+        acc_freq: 1 # accuracy logging frequency
+but others are python classes. We configure the always with _target_
+
+     config: 
+         #passed to itwinai configuration class 
+         _target_: itwinai.torch.config.TrainingConfiguration 
+         batch_size: 10
+         #optimizer parameters
+         optim_lr: 1.0e-4
+         optim_momentum: 0.9
+all the parameters in the config section will be passed to the itwinai TrainingConfiguration class.
+         
+ 
+
+
+
 
 ## Logging
 
