@@ -152,7 +152,7 @@ The user can select which pipeline to execute via the *pipe_key* parameter. The 
 - **training_pipeline**: Involves dataset splitting, filtering and NN training. Logs weights, metrics and metadata on MLFlow and TensorBoard
 - **inference_pipeline**: Feeds inference dataset to pretrained NN model performing denoising. Logs metrics and metadata on TensorBoard
 - **vis_dts**: Allows for visualization of denoised data, accuracy metrics, and other metadata via TensorBoard
-- **glitchflow_pipeline**: **@Alessio ???**
+- **glitchflow_pipeline**: Generates a synthetic dataset given a pretrained NN
 
 If *pipe_key* is not specified, the *training_pipeline* will be executed by default. The user can further select the pipeline's substeps and their order to execute via the *pipe_steps* argument; if not given, the whole pipeline will be executed. See [config.yaml](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/config.yaml) for all substeps of each pipeline.
 
@@ -166,7 +166,7 @@ will execute the following steps, (see [config.yaml](https://github.com/interTwi
 - Annalisa-scan: the channel selection algorithm
 - QT-dataset: the spectrogram dataset creation  
 
-If however the user wants to perform a second channel selection and spectrogram dataset creation using different parameters (modifying the relative config files **@Alessio: quali?**) on an already preprocessed dataset they can run:
+If however the user wants to perform a second channel selection and spectrogram dataset creation using different parameters (modifying the relative config files scan.yaml for Annalisa-scan and process.yaml and whiten.yaml for QT-dataset ) on an already preprocessed dataset they can run:
 
 > itwinai exec-pipeline +pipe_key=preproc_pipeline +pipe_steps=[Annalisa-scan,QT-dataset]
 
