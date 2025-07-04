@@ -96,38 +96,38 @@ Then your current directory will look like
         └── QTdatasets   #Spectrograms
         └── temp         #Data saved during training
 
-The saveconf.yaml file contained inside the conf directory can be used to adjust the directory tree to the user setup.
+The [saveconf.yaml](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/conf/scan.yaml) file contained inside the conf directory can be used to adjust the directory tree to the user setup.
 
 The other files contained inside the conf directory define the processing pipeline parameters
 
-- datasets.yaml <br>
+- [datasets.yaml](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/conf/datasets.yaml) <br>
 Defines the locations of the datasets and their processing parameters <br>
-- scan.yaml <br>
+- [scan.yaml](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/conf/saveconf.yaml) <br>
 Defines the parameters for Annalisa <br>
-- process.yaml <br>
+- [process.yaml](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/conf/process.yaml) <br>
 Defines the qtransform during the transformation of the dataset's timeseries into spectrograms
-- whiten.yaml  <br>
+- [whiten.yaml](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/conf/whiten.yaml)  <br>
 Defines the timeseries whitening during spectrograms creation
 
 ## ANNALISA module
 
 The ANNALISA module containes the pipeline classes for processing datasets and compute correlations for channel selection. The module includes:<br>
 
-- Data.py: class containing data structures and methods for data preprocessing used in the pipeline such as:
+- [Data.py](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/Annalisa/Data.py): class containing data structures and methods for data preprocessing used in the pipeline such as:
     - The TFrame class used for reading pytorch tensors and relative metadata during the pipeline workflow
     - Method for reading and processing gw data
     - Methods and classes for working with different data format like yaml and json
     - Methods used for preprocessing the dataset before model training
     - Various custom matplotlib plotting functions 
 
-- Dataloader.py: Itwinai's classes for data loading steps. It provides:
+- [Dataloader.py](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/Annalisa/Dataloader.py): Itwinai's classes for data loading steps. It provides:
     - Processing of gw data
     - Dataset splitting and preprocessing before training
     - Loading data for inference
     - Spectrogram dataset visualization utility.
 
-- Scanner.py: Itwinai's class selecting relevant channels for network training by analyzing time-frequency data (Q-Transform) to find correlations measured as  coincident spikes in signal energy above a threshold. Parameters can be defined via scan.yaml file. Results are stored locally, path can be configured by user.
-- Spectrogram.py: Itwinai's class for transforming a dataset of timeseries into a dataset of spectrograms via Q-transform.  Parameters can be defined via process.yaml file for the Q-transform and for the whitening of data the whiten.yaml file is read. Results are stored locally, path can be configured by user.
+- [Scanner.py](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/Annalisa/Scanner.py): Itwinai's class selecting relevant channels for network training by analyzing time-frequency data (Q-Transform) to find correlations measured as  coincident spikes in signal energy above a threshold. Parameters can be defined via scan.yaml file. Results are stored locally, path can be configured by user.
+- [Spectrogram.py](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/Annalisa/Spectrogram.py): Itwinai's class for transforming a dataset of timeseries into a dataset of spectrograms via Q-transform.  Parameters can be defined via process.yaml file for the Q-transform and for the whitening of data the whiten.yaml file is read. Results are stored locally, path can be configured by user.
 
  
 
@@ -135,11 +135,11 @@ The ANNALISA module containes the pipeline classes for processing datasets and c
 
 The GlitchFlow module contains the pipeline classes for training the DT's Neural Network, collecting metrics using MLflow and TensorBoard, making inferences with the trained model, and generating synthetic glitches. The model is logged to MLflow. The module contains:
 
-- Data.py: same as for ANNALISA
-- Dataloader.py: same as for ANNALISA.<br>
-- Model.py: class for Neural Network architecture definition and the metrics used during the training and inference step. During the inference step the model is retrieved from the MLFlow catalogue. <br>
-- Trainer.py: TorchTrainer class used for model training. See itwinai documentation for more details https://itwinai.readthedocs.io/latest/how-it-works/training/training.html#itwinai-torchtrainer.
-- Inference.py: cclass for inference, denoising and veto.
+- [Data.py](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/Glitchflow/Data.py): same as for ANNALISA
+- [Dataloader.py](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/Glitchflow/Dataloader.py): same as for ANNALISA.<br>
+- [Model.py](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/Glitchflow/Model.py): class for Neural Network architecture definition and the metrics used during the training and inference step. During the inference step the model is retrieved from the MLFlow catalogue. <br>
+- [Trainer.py](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/Glitchflow/Trainer.py): TorchTrainer class used for model training. See itwinai documentation for more details https://itwinai.readthedocs.io/latest/how-it-works/training/training.html#itwinai-torchtrainer.
+- [Inference.py](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/Glitchflow/Inference.py): cclass for inference, denoising and veto.
 
  ## Pipeline execution
 
