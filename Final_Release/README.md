@@ -5,8 +5,8 @@
 * [Technical documentation](#technical-documentation)
     * [Requirements](#requirements)
     * [Installation and configuration](#installation-and-configuration)
-    * [ANNALISA package](#annalisa-package)
-    * [Glitchflow package](#glitchflow-package)
+    * [ANNALISA module](#annalisa-module)
+    * [Glitchflow module](#glitchflow-module)
     * [Pipeline execution](#pipeline-execution)
     * [Logging](#logging)
  
@@ -109,11 +109,11 @@ Defines the qtransform during the transformation of the dataset's timeseries int
 - whiten.yaml  <br>
 Defines the timeseries whitening during spectrograms creation
 
-## ANNALISA package
+## ANNALISA module
 
-The ANNALISA Package containes the pipeline classes for processing datasets and compute correlations for channel selection. The package includes:<br>
+The ANNALISA module containes the pipeline classes for processing datasets and compute correlations for channel selection. The module includes:<br>
 
-- Data.py: module containing data structures and methods for data preprocessing used in the pipeline such as:
+- Data.py: package containing data structures and methods for data preprocessing used in the pipeline such as:
     - The TFrame class used for reading pytorch tensors and relative metadata during the pipeline workflow
     - Method for reading and processing gw data
     - Methods and classes for working with different data format like yaml and json
@@ -131,16 +131,16 @@ The ANNALISA Package containes the pipeline classes for processing datasets and 
 
  
 
-## GlitchFlow package
+## GlitchFlow module
 
-The GlitchFlow package contains the pipeline classes for training the DT's Neural Network, collecting metrics using MLflow and TensorBoard, making inferences with the trained model, and generating synthetic glitches. The model is logged to MLflow. The package contains:
+The GlitchFlow module contains the pipeline classes for training the DT's Neural Network, collecting metrics using MLflow and TensorBoard, making inferences with the trained model, and generating synthetic glitches. The model is logged to MLflow. The module contains:
 
 - Data.py: same as for ANNALISA
 - Dataloader.py: Itwinai's classes for data loading steps. In particular dataset splitting and preprocessing.<br>
   During the inference step the model is retrieved from the MLFlow catalogue. <br>
-- Model.py: module containing the Neural Network architecture definition and the metrics used during the training and inference step.
+- Model.py: package containing the Neural Network architecture definition and the metrics used during the training and inference step.
 - Trainer.py: TorchTrainer class used for model training. See itwinai documentation for more details https://itwinai.readthedocs.io/latest/how-it-works/training/training.html#itwinai-torchtrainer.
-- Inference.py: Module containing the inference step and a class for generating a synthetic dataset.
+- Inference.py: package containing the inference step and a class for generating a synthetic dataset.
 
  ## Pipeline execution
 
@@ -233,7 +233,7 @@ Now we define the first step of the pipeline:
       images_dataset: '/home/mydataset.pt'
 
 The first two lines follows the same logic used to define the pipeline. The name followed by the _target_ directive wich indicates
-a class of the Glitchflow package. QTDatasetSplitter will split data into the train and test subsets and pass them to the next step.
+a class of the Glitchflow module. QTDatasetSplitter will split data into the train and test subsets and pass them to the next step.
 
 Next we define some parameters using the yaml syntax
 
