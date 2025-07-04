@@ -12,7 +12,7 @@
  
 # DT Virgo Use Case
 
-The sensitivity of Gravitational Wave (GW) interferometers is limited by noise. We have been using Generative Neural Networks (GenNNs) to produce a Digital Twin (DT) of the Virgo interferometer to realistically simulate transient noise in the detector. We have used the GenNN-based DT to generate synthetic strain data (a channel that measures the deformation induced by the passage of a gravitational wave). Furthermore, the detector is equipped with sensors that monitor the status of the detector’s subsystems as well as the environmental conditions (wind, temperature, seismic motions) and whose output is saved in the so-called auxiliary channels. Therefore, in a second phase, also from the perspective of the Einstein Telescope, we will use the trained model to characterise the noise and optimise the use of auxiliary channels in vetoing and denoising the signal in low-latency searches, i.e., those data analysis pipelines that search for transient astrophysical signals in almost real time. This will allow the low-latency searches (not part of the DT) to send out more reliable triggers to observatories for multi-messenger astronomy.	
+The sensitivity of Gravitational Wave (GW) interferometers is limited by noise. We have been using Generative Neural Networks (GenNNs) to produce a **Digital Twin** (DT) of the **Virgo interferometer** to realistically simulate transient noise in the detector. We have used the GenNN-based DT to generate synthetic strain data (a channel that measures the deformation induced by the passage of a gravitational wave). Furthermore, the detector is equipped with sensors that monitor the status of the detector’s subsystems as well as the environmental conditions (wind, temperature, seismic motions) and whose output is saved in the so-called auxiliary channels. Therefore, in a second phase, also from the perspective of the Einstein Telescope, we will use the trained model to characterise the noise and optimise the use of auxiliary channels in vetoing and denoising the signal in low-latency searches, i.e., those data analysis pipelines that search for transient astrophysical signals in almost real time. This will allow the low-latency searches (not part of the DT) to send out more reliable triggers to observatories for multi-messenger astronomy.	
 Figure 1 shows the high-level architecture of the DT. Data streams from auxiliary channels are used to find the transfer function of the system producing non-linear noise in the detector output. The output function compares the simulated and the real signals in order to issue a veto decision (to further process incoming data in low-latency searches) or to remove the noise contribution from the real signal (denoising).
 
 <p align="center">
@@ -22,7 +22,7 @@ Figure 1 shows the high-level architecture of the DT. Data streams from auxiliar
 </p>
 
 Figure 2 shows the System Context diagram of the DT for the veto and denoising pipeline. 
-Two main subsystems characterise the DT architecture: the Training DT subsystem and the Inference DT subsystem. The Training DT subsystem is responsible for the periodical re-training of the DT model on a buffered subsample of the most recent Virgo data. The DT model needs to be updated to reflect the current status of the interferometer, so continuous retraining of the GenNN needs to be carried out. tThe Inference DT subsystem is responsible for the low-latency vetoing and denoising of the detector’s datastream.
+Two main subsystems characterise the DT architecture: the **Training DT subsystem** and the **Inference DT subsystem**. The Training DT subsystem is responsible for the periodical re-training of the DT model on a buffered subsample of the most recent Virgo data. The DT model needs to be updated to reflect the current status of the interferometer, so continuous retraining of the GenNN needs to be carried out. tThe Inference DT subsystem is responsible for the low-latency vetoing and denoising of the detector’s datastream.
 All modules within both subsystems are implemented as itwinai plugins. Itwinai offers several key features that are beneficial to the DT, including distributed training capabilities, a robust logging and model catalog system, enhanced code reusability, and a user-friendly configuration interface for pipelines.
 
 <p align="center">
@@ -33,11 +33,11 @@ All modules within both subsystems are implemented as itwinai plugins. Itwinai o
 
 ## The Training DT Subsystem
 
-Operators initiate the **Training Subsystem**. The ANNALISA module first selects relevant channels for network training by analyzing time-frequency data (Q-Transform) to find correlations measured as coincident spikes in signal energy above a threshold.
+Operators initiate the **Training Subsystem**. The **ANNALISA** module first selects relevant channels for network training by analyzing time-frequency data (Q-Transform) to find correlations measured as coincident spikes in signal energy above a threshold.
 
 After this initial step, operators preprocess data retrieved from the Virgo Data Lake. ANNALISA handles this preprocessing, which includes data resampling, whitening, spectrogram generation, image cropping, and loading into a custom PyTorch dataloader. This dataloader then feeds a Generative Neural Network (GenNN) during training.
 
-The chosen neural network is a **Convolutional U-net**, featuring residual blocks and attention gates with enhanced skip connections for better data complexity capture. Other architectures are available for the user to experiment. GlitchFlow manages both the model definition and training. As the model trains, its weights and performance metrics are systematically logged into a dedicated model registry on MLFlow, making it accessible for the Inference Subsystem. Itwinai facilitates this logging and offloading to computing infrastructure during training.
+The chosen neural network is a **Convolutional U-net**, featuring residual blocks and attention gates with enhanced skip connections for better data complexity capture. Other architectures are available for the user to experiment. The **GlitchFlow** module manages both the model definition and training. As the model trains, its weights and performance metrics are systematically logged into a dedicated model registry on MLFlow, making it accessible for the Inference Subsystem. Itwinai facilitates this logging and offloading to computing infrastructure during training.
 
 
 ## The Inference DT Subsystem
@@ -98,16 +98,16 @@ Then your current directory will look like
 
 The [saveconf.yaml](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/conf/scan.yaml) file contained inside the conf directory can be used to adjust the directory tree to the user setup.
 
-The other files contained inside the conf directory define the processing pipeline parameters
+The other files contained in the conf directory define the processing pipeline parameters (see each file for detailed list):
 
-- [datasets.yaml](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/conf/datasets.yaml) <br>
-Defines the locations of the datasets and their processing parameters <br>
-- [scan.yaml](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/conf/saveconf.yaml) <br>
-Defines the parameters for Annalisa <br>
-- [process.yaml](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/conf/process.yaml) <br>
-Defines the qtransform during the transformation of the dataset's timeseries into spectrograms
-- [whiten.yaml](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/conf/whiten.yaml)  <br>
-Defines the timeseries whitening during spectrograms creation
+- [datasets.yaml](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/conf/datasets.yaml): <br>
+Locations of the datasets and their processing parameters. <br>
+- [scan.yaml](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/conf/saveconf.yaml): <br>
+Channel correlation algorithm and selection parameters. <br>
+- [process.yaml](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/conf/process.yaml): <br>
+Qtransform parameters. <br>
+- [whiten.yaml](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/conf/whiten.yaml):  <br>
+Whitening paramters. <br>
 
 ## ANNALISA module
 
@@ -127,7 +127,7 @@ The ANNALISA module containes the pipeline classes for processing datasets and c
     - Spectrogram dataset visualization utility.
 
 - [Scanner.py](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/Annalisa/Scanner.py): Itwinai's class selecting relevant channels for network training by analyzing time-frequency data (Q-Transform) to find correlations measured as  coincident spikes in signal energy above a threshold. Parameters can be defined via scan.yaml file. Results are stored locally, path can be configured by user.
-- [Spectrogram.py](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/Annalisa/Spectrogram.py): Itwinai's class for transforming a dataset of timeseries into a dataset of spectrograms via Q-transform.  Parameters can be defined via process.yaml file for the Q-transform and for the whitening of data the whiten.yaml file is read. Results are stored locally, path can be configured by user.
+- [Spectrogram.py](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/Annalisa/Spectrogram.py): Itwinai's class for transforming a dataset of timeseries into a dataset of spectrograms via Q-transform.  Parameters can be defined via process.yaml file for the Q-transform and for the whitening of data the whiten.yaml file is read.
 
  
 
@@ -135,37 +135,38 @@ The ANNALISA module containes the pipeline classes for processing datasets and c
 
 The GlitchFlow module contains the pipeline classes for training the DT's Neural Network, collecting metrics using MLflow and TensorBoard, making inferences with the trained model, and generating synthetic glitches. The model is logged to MLflow. The module contains:
 
-- [Data.py](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/Glitchflow/Data.py): same as for ANNALISA
-- [Dataloader.py](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/Glitchflow/Dataloader.py): same as for ANNALISA.<br>
-- [Model.py](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/Glitchflow/Model.py): class for Neural Network architecture definition and the metrics used during the training and inference step. During the inference step the model is retrieved from the MLFlow catalogue. <br>
+- [Data.py](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/Glitchflow/Data.py): Same as for ANNALISA
+- [Dataloader.py](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/Glitchflow/Dataloader.py): Same as for ANNALISA.<br>
+- [Model.py](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/Glitchflow/Model.py): Class for Neural Network architecture definition and the metrics used during the training and inference step. During the inference step the model is retrieved from the MLFlow catalogue. <br>
 - [Trainer.py](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/Glitchflow/Trainer.py): TorchTrainer class used for model training. See itwinai documentation for more details https://itwinai.readthedocs.io/latest/how-it-works/training/training.html#itwinai-torchtrainer.
-- [Inference.py](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/Glitchflow/Inference.py): cclass for inference, denoising and veto.
+- [Inference.py](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/Glitchflow/Inference.py): Class for inference, denoising and veto.
 
  ## Pipeline execution
 
- To execute the pipeline use itwinai syntax. Assuming the working directory is the same of the config.yaml file
+To execute the pipeline use itwinai syntax. Assuming the working directory is the same as the [config.yaml](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/config.yaml) file's:
 
  >itwinai exec-pipeline +pipe_key="pipeline name" +pipe_steps=[List containing the steps to execute]
 
-The user can select which pipeline to execute via the pipe_key parameter. The predefined pipelines are:
-- preproc_pipeline: Involves dataset preprocessing, channel selection and spectrogram dataset creation
-- training_pipeline: Involves dataset splitting, filtering and NN training. Logs weights, metrics and metadata on MLFlow and TensorBoard
-- inference_pipeline: Feeds inference dataset to pretrained NN model performing denoising. Logs metrics and metadata on TensorBoard
-- vis_dts: Allows for visualization of denoised data, accuracy metrics, and other metadata via TensorBoard
-- glitchflow_pipeline: ?
+The user can select which pipeline to execute via the *pipe_key* parameter. The predefined pipelines are:
+- **preproc_pipeline**: Involves dataset preprocessing, channel selection and spectrogram dataset creation
+- **training_pipeline**: Involves dataset splitting, filtering and NN training. Logs weights, metrics and metadata on MLFlow and TensorBoard
+- **inference_pipeline**: Feeds inference dataset to pretrained NN model performing denoising. Logs metrics and metadata on TensorBoard
+- **vis_dts**: Allows for visualization of denoised data, accuracy metrics, and other metadata via TensorBoard
+- **glitchflow_pipeline**: **@Alessio ???**
 
-If pipe_key is not specified, the training_pipeline will be executed by default. The user can further select the pipeline's substeps and their order to execute via the pipe_steps argument; if not given, the whole pipeline will be executed. See [config.yaml](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/config.yaml) for all substeps of each pipeline.
+If *pipe_key* is not specified, the *training_pipeline* will be executed by default. The user can further select the pipeline's substeps and their order to execute via the *pipe_steps* argument; if not given, the whole pipeline will be executed. See [config.yaml](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/config.yaml) for all substeps of each pipeline.
+
 For example, the preprocessing pipeline:
 
 >itwinai exec-pipeline +pipe_key=preproc_pipeline 
 
-will execute the following steps, see config.yaml file:
+will execute the following steps, (see [config.yaml](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/config.yaml)):
 
 - Data-processor the data preprocessing step 
 - Annalisa-scan: the channel selection algorithm
 - QT-dataset: the spectrogram dataset creation  
 
-If however the user wants to perform a second channel selection and spectrogram dataset creation using different parameters (modifying the relative config files) on an already preprocessed dataset they can run:
+If however the user wants to perform a second channel selection and spectrogram dataset creation using different parameters (modifying the relative config files **@Alessio: quali?**) on an already preprocessed dataset they can run:
 
 > itwinai exec-pipeline +pipe_key=preproc_pipeline +pipe_steps=[Annalisa-scan,QT-dataset]
 
@@ -210,7 +211,7 @@ Examples are reported in the figures below:
 <p align="center">
   <img src="https://github.com/user-attachments/assets/a7d37a27-4f58-47a3-8635-7ee422c29b1f" alt="Denoising inference">
   <br>
-  Figure 4:On the left: Denoising inference. Real, generated spectrograms of data used for inference and their absolute difference.
+  Figure 4: On the left: Denoising inference. Real, generated spectrograms of data used for inference and their absolute difference.
 On the center and right: Denoising and vetoing accuracy as a function of different $SNR^2$ threshold after training.
 </p>
 
