@@ -49,7 +49,7 @@ The output of this process comprises "clean" data, ideally free of glitches, and
 Logged details, including images of the real, generated, and cleaned data, are accessible on **TensorBoard**. Metadata containing veto flag information, organized by the GPS time of the analyzed data, is also logged. Furthermore, metadata for any data that failed to be cleaned is recorded, including the area and Signal-to-Noise Ratio (SNR) of glitches still visible after cleaning. To access this information, users can launch TensorBoard and navigate through the logged events, which are categorized by run and timestamp, allowing for detailed visualization and analysis of the inference results. The entire pipeline, encompassing data selection, inference, and logging, is configurable via a YAML file, enabling users to specify modules to execute, preprocessing parameters, dataset specifics, network architecture, and paths for saving results.
 
 # Technical documentation
-The following shows how to set up and run the  Virgo DT pipeline.
+The following shows how to set up and run the Virgo DT pipeline.
 
 ## Requirements
 
@@ -113,7 +113,7 @@ Defines the timeseries whitening during spectrograms creation
 
 The ANNALISA module containes the pipeline classes for processing datasets and compute correlations for channel selection. The module includes:<br>
 
-- Data.py: package containing data structures and methods for data preprocessing used in the pipeline such as:
+- Data.py: class containing data structures and methods for data preprocessing used in the pipeline such as:
     - The TFrame class used for reading pytorch tensors and relative metadata during the pipeline workflow
     - Method for reading and processing gw data
     - Methods and classes for working with different data format like yaml and json
@@ -136,137 +136,38 @@ The ANNALISA module containes the pipeline classes for processing datasets and c
 The GlitchFlow module contains the pipeline classes for training the DT's Neural Network, collecting metrics using MLflow and TensorBoard, making inferences with the trained model, and generating synthetic glitches. The model is logged to MLflow. The module contains:
 
 - Data.py: same as for ANNALISA
-- Dataloader.py: Itwinai's classes for data loading steps. In particular dataset splitting and preprocessing.<br>
-  During the inference step the model is retrieved from the MLFlow catalogue. <br>
-- Model.py: package containing the Neural Network architecture definition and the metrics used during the training and inference step.
+- Dataloader.py: same as for ANNALISA.<br>
+- Model.py: class for Neural Network architecture definition and the metrics used during the training and inference step. During the inference step the model is retrieved from the MLFlow catalogue. <br>
 - Trainer.py: TorchTrainer class used for model training. See itwinai documentation for more details https://itwinai.readthedocs.io/latest/how-it-works/training/training.html#itwinai-torchtrainer.
-- Inference.py: package containing the inference step and a class for generating a synthetic dataset.
+- Inference.py: cclass for inference, denoising and veto.
 
  ## Pipeline execution
 
- To execute a pipeline use itwinai syntax. Assuming the working directory is the same of the config.yaml file
+ To execute the pipeline use itwinai syntax. Assuming the working directory is the same of the config.yaml file
 
  >itwinai exec-pipeline +pipe_key="pipeline name" +pipe_steps=[List containing the steps to execute]
 
-if the pipe_step argument is not given the whole pipeline will be executed. For example consider the preprocessing pipeline of the config.yaml file.
-Suppose you want to preprocess  a dataset, search for correlated channels and then producing a spectrogram dataset, the syntax will be:
+The user can select which pipeline to execute via the pipe_key parameter. The predefined pipelines are:
+- preproc_pipeline: Involves dataset preprocessing, channel selection and spectrogram dataset creation
+- training_pipeline: Involves dataset splitting, filtering and NN training. Logs weights, metrics and metadata on MLFlow and TensorBoard
+- inference_pipeline: Feeds inference dataset to pretrained NN model performing denoising. Logs metrics and metadata on TensorBoard
+- vis_dts: Allows for visualization of denoised data, accuracy metrics, and other metadata via TensorBoard
+- glitchflow_pipeline: ?
+
+If pipe_key is not specified, the training_pipeline will be executed by default. The user can further select the pipeline's substeps and their order to execute via the pipe_steps argument; if not given, the whole pipeline will be executed. See [config.yaml](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/config.yaml) for all substeps of each pipeline.
+For example, the preprocessing pipeline:
 
 >itwinai exec-pipeline +pipe_key=preproc_pipeline 
 
-where preproc_pipeline is the pipeline's name. Itwinai will execute the following steps, see the config.yaml file:
+will execute the following steps, see config.yaml file:
 
-- The preprocessing step named Data-processor
-- A scan with Annalisa, the step named Annalisa-scan
-- The spectrogram production step named QT-dataset
+- Data-processor the data preprocessing step 
+- Annalisa-scan: the channel selection algorithm
+- QT-dataset: the spectrogram dataset creation  
 
-Instead suppose the dataset has been been already preprocessed, you need only the latter two steps. So type 
+If however the user wants to perform a second channel selection and spectrogram dataset creation using different parameters (modifying the relative config files) on an already preprocessed dataset they can run:
 
 > itwinai exec-pipeline +pipe_key=preproc_pipeline +pipe_steps=[Annalisa-scan,QT-dataset]
-
-where we have provided a list of steps for execution.
-
-For the training of the model the syntax is simplified
-
->itwinai exec-pipeline
-
-because the pipeline named training_pipeline is considered the default. 
-
-Now we analyze how a pipeline written inside the config.yaml is configured.
-We consider the training pipeline.
-
-
-
-     training_pipeline:
-     _target_: itwinai.pipeline.Pipeline
-
-       Splitter:
-        _target_: Glitchflow.Dataloader.QTDatasetSplitter
-        train_proportion: 0.9
-        images_dataset: '/home/mydataset.pt'
-
-       Processor:  
-        _target_: Glitchflow.Dataloader.QTProcessor 
-        
-       Trainer:
-        _target_: Glitchflow.Trainer.GlitchTrainer
-        #training parameters section
-        num_epochs: 100
-        acc_freq: 1 # accuracy logging frequency
-        config: 
-         #passed to itwinai configuration class 
-         _target_: itwinai.torch.config.TrainingConfiguration 
-         batch_size: 10
-         #optimizer parameters
-         optim_lr: 1.0e-4
-         optim_momentum: 0.9
-         optim_weight_decay: 1e-4
-         #scheduler parameters
-         cschd_mode: 'min'
-         cschd_patience: 7
-         cschd_min_lr: 1e-7
-         cschd_verbose: Yes 
-         cschd_factor: 0.5
-        #logging section
-        tensorboard_root: '/home'
-        logger: 
-         _target_: itwinai.loggers.MLFlowLogger
-         experiment_name: 
-         log_freq: 'batch'
-         tracking_uri: 'http://localhost:5005'
-
-         
-
-Pipelines are defined using the yaml markup language. The first two lines are 
-
-    training_pipeline:
-     _target_: itwinai.pipeline.Pipeline
-
-in the first line we define the name of the pipeline that will be used by the command line . 
-The second line ,the target _directive_ is standard and we will always use it to define the pipeline as an itwinai object.
-The _target_ directive defines a python object in general.  <br>
-
-Now we define the first step of the pipeline:
-
-    Splitter:
-      _target_: Glitchflow.Dataloader.QTDatasetSplitter
-      train_proportion: 0.9
-      images_dataset: '/home/mydataset.pt'
-
-The first two lines follows the same logic used to define the pipeline. The name followed by the _target_ directive wich indicates
-a class of the Glitchflow module. QTDatasetSplitter will split data into the train and test subsets and pass them to the next step.
-
-Next we define some parameters using the yaml syntax
-
-      train_proportion: 0.9
-      images_dataset: '/home/mydataset.pt'
-We have defined the the train proportion of the dataset and its path. These parameters will be passed to the class constructor.
-The second step is defined with the same logic.
-
-      Processor:  
-       _target_: Glitchflow.Dataloader.QTProcessor 
-
- The training step has more parameters. Some of them are simple scalars
-
-     Trainer:
-        _target_: Glitchflow.Trainer.GlitchTrainer
-        #training parameters section
-        num_epochs: 100
-        acc_freq: 1 # accuracy logging frequency
-but others are python classes. We configure it  with _target_ like in the previous steps
-
-     config: 
-         #passed to itwinai configuration class 
-         _target_: itwinai.torch.config.TrainingConfiguration 
-         batch_size: 10
-         #optimizer parameters
-         optim_lr: 1.0e-4
-         optim_momentum: 0.9
-all the parameters in the config section will be passed to the itwinai TrainingConfiguration class.
-         
- 
-
-
-
 
 ## Logging
 
