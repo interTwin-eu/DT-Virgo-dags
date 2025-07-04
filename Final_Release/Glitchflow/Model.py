@@ -445,6 +445,9 @@ def train_decoder(num_epochs,
     # Initialize tracking metrics
     loss_plot = []
     val_loss_plot = []
+    
+    denoise_plot=[]
+    veto_plot=[]
     best_val_loss = float('inf')
     
     
@@ -558,8 +561,6 @@ def train_decoder(num_epochs,
         # Evaluate accuracy every epoch
         if epoch % nacc == 0 and (not(os.path.isfile("./conf/accuracy.lock"))):
             
-            print('Logging accuracies.')
-            
             
             
             generated_tensor_pre = torch.tensor([]).to('cpu')  # Initialize an empty tensor
@@ -584,10 +585,11 @@ def train_decoder(num_epochs,
                                                                                     threshold=snr2_threshold)
             
             
-            
 
             
             
+            denoise_plot.append(cluster_abs_diff_accuracies[0])
+            veto_plot.append(clusters_generated_accuracies[0])
             logger.log(cluster_abs_diff_accuracies[0],f"Denoising Accuracy SNR^2 {snr2_threshold}",step=epoch)
             logger.log(clusters_generated_accuracies[0],f"Veto Accuracy SNR^2 {snr2_threshold}",step=epoch)
             gfc=plot_images_gfc(generated_tensor,test_set , channel_means,num_aux_channels=(test_set.shape[1]-1))
@@ -595,7 +597,7 @@ def train_decoder(num_epochs,
             logger.log(gfc,"Sample",kind="figure",step=epoch)
             #print(f'Epoch {epoch}: Validation accuracy: {avg_accuracy:.4f}')
 
-    return loss_plot, val_loss_plot
+    return loss_plot, val_loss_plot,denoise_plot,veto_plot
 
 
 #---------------------------------------------LOSS COMPUTATION-------------------------------------------------

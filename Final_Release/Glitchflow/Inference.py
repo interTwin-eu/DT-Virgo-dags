@@ -24,30 +24,28 @@ from .Model import calculate_iou_2d_non0,generate_data,MeanAbsDiff,StdAbsDiff,ca
 from .Data import plot_spectrogram, plot_images,plot_accuracies,plot_cleaned_data,save_tensor
 
 import matplotlib.pyplot as plt
+import os
+
+
 
 
     
     
 class GlitchInference (Predictor):
-
-    #Class for inference
-
-    # generated data based on test and background dataset.
-    #log informations on the generated data and logs accuracies
     
-    def __init__(self, v_max:int=25,#clormap norm
+    def __init__(self, 
                  batch_size:int=2,
                  shuffle:bool='False',
                  inference_path:str='./temp/',#path for saving data 
-                 gen_norm:str|bool=False,#normalize generated data
                  n_samp_rows:int=11,# number of saved data
                  logger: Logger | None = None,#mlflow logger
-                 tensorboard_root:str='/home',#tensorboard logger
+                 tensorboard_root:str='/home/jovyan/runs/',#tensorboard root directory
                  trun_name:str='INF/',#tensorboard tag
-                 track_log_freq: int| str = 'batch',#logging frequency
-                 ndebug: int=20) -> None:# number of uncleaned data logged
+                 track_log_freq: int| str = 'batch'#logging frequency
+                 ,ndebug: int=20,# number of uncleaned data logged
+                 snr2_threshold: int=16) -> None:# snr^2 threshold for cleaned data
         
-        self.v_max=v_max
+        
         self.logger=logger
         self.batch_size=batch_size
         self.shuffle=shuffle
@@ -58,6 +56,7 @@ class GlitchInference (Predictor):
         self.trun_name=trun_name
         self.track_log_freq=track_log_freq
         self.ndebug=ndebug
+        self.snr2_threshold=snr2_threshold
         
     def fraction_empty_lists(self,list_of_lists):
         # Count the number of non-empty lists
@@ -268,43 +267,43 @@ class GlitchInference (Predictor):
             
         
         
-        #####generate table######
-        #####generate table######
-        print(generated_test.shape)
-        diff=torch.abs(generated_test-test[:,0,:,:].unsqueeze(1))
-        #sum pixels
         
+        
+        diff=torch.abs(generated_test-test[:,0,:,:].unsqueeze(1))
+        
+        npix=torch.sum(diff, dim=(2, 3)) #add mask
         
     
         abs_difference_test=diff*norm_factor
-        npix=(abs_difference_test>16).sum(dim=(-2,-1))
-        #torch.abs((generated_test-test[:,0,:,:].unsqueeze(1))*norm_factor)
+        
+        
         
         cluster_test = ClusterAboveThreshold(16, 1).to('cpu')
         
         clusters_abs_test = cluster_test(abs_difference_test)
         
+        npix=(abs_difference_test>self.snr2_threshold).sum(dim=(-2,-1))
         
         
-        #print(torch.sum(abs_difference_test, dim=(2, 3)))  
+       
+        
+        
+        
         snr2=abs_difference_test.amax(dim=(1,2,3))
         
         
+        cluster_mask=[x==0 for x in npix]
         
-        cluster_mask= self.glitch_classifier(clusters_abs_test)
         
-        cluster_mask=[x==1 for x in cluster_mask]
-        
-        #print(cluster_mask)
         
         idstep=0
         
         table_md = "| Step | GPS | Cleaned | SNR^2 | N. Pixel |\n|----|----|-------|----------|--------|\n"
         for id_value, bool_value, snr2_val, pix_val in zip(gps,cluster_mask,snr2,npix):
-            table_md += f"| {idstep} |{id_value} | {'No' if bool_value else 'Yes'} | {snr2_val: .1f} | {pix_val.item() if bool_value else 0 } |\n"
+            table_md += f"| {idstep} |{id_value} | {'Yes' if bool_value else 'No'} | {snr2_val: .1f} | { 0 if bool_value else pix_val.item() } |\n"
             idstep+=1
         
-        tracking_logger.log(table_md,f'Cleaned Batch',kind="text")
+        tracking_logger.log(table_md,f'Cleaned Batch Threshold SNR^2{self.snr2_threshold}',kind="text")
         
         selected_gps = [sublist for sublist, mask in zip(gps, cluster_mask) if  mask]
         
@@ -316,9 +315,9 @@ class GlitchInference (Predictor):
         
         selected_test=test[cluster_mask]
         
-        #print(selected_test.shape)
+        print(selected_test.shape)
         
-        #print('TEST')
+        
         selected_gen=generated_test[cluster_mask]
         print(selected_gen.shape)
         
@@ -370,27 +369,6 @@ class GlitchInference (Predictor):
         
         
         
-        
-        empty_idx, non_empty_idx = self.indices_of_empty_sublists(cluster_abs_diff_accuracies)
-        
-        print( 'ABS',len(cluster_abs_diff_accuracies))
-        
-        
-        
-        
-        
-        iou=calculate_iou_2d_non0(generated_tensor*norm_factor, target_tensor*norm_factor, norm=norm_factor,threshold=15*norm_factor)
-        
-        
-       
-        
-        self.logger.log(
-                            item=iou.item(),
-                            identifier='iou_generated',
-                            kind="metric"
-                        )
-        
-        
         self.logger.destroy_logger_context()
         
        
@@ -403,15 +381,14 @@ class GlitchInference (Predictor):
     
     
 class Glitchflow (Predictor):
-
-    #saves a tensor of generated data
     
     def __init__(self,
                  batch_size:int=2,
                  shuffle:bool='False',
                  inference_path:str='./temp/',
                  save_path:str='./temp',
-                 fname:str='glitch_generated') -> None:
+                 fname:str='glitch_generated',
+                  logger: Logger | None = None) -> None:
         
         
         self.batch_size=batch_size
@@ -419,6 +396,7 @@ class Glitchflow (Predictor):
         self.res_root=inference_path
         self.save_path=save_path
         self.fname=fname
+        self.logger=logger
         
         
         
@@ -438,7 +416,17 @@ class Glitchflow (Predictor):
         gps=datalist[4]
         model_name=datalist[5]
        
-        generator_2d=datalist[3].to(device)#model to gpu
+        #generator_2d=datalist[3].to(device)
+        
+        self.logger.create_logger_context()
+        
+        generator_2d=datalist[3]
+        
+        
+        
+        
+        generator_2d.to(device)
+        
         num_aux_channels=test.shape[1]-1
         
         traintms=str(datetime.datetime.now())

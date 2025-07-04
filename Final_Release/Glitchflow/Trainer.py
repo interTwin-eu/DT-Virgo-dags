@@ -21,8 +21,8 @@ import logging
 import datetime
 
 
-import gwpy
-from gwpy.timeseries import TimeSeries
+#import gwpy
+#from gwpy.timeseries import TimeSeries
 
 
 if torch.cuda.is_available():
@@ -78,14 +78,14 @@ class GlitchTrainer(TorchTrainer):
         coptim_betas: List=[0.9,0.999],
         grad_clip: float=5.0,
         save_name: str='model_checkpoint',
-        acc_threshold: int=16, #accuracy threshold
+        acc_threshold: int=16,#accuracy threshold
         config: Dict | TrainingConfiguration | None = None,#dictionary configuration see itwinai
         strategy: Literal["ddp", "deepspeed", "horovod"] | None = None,#not supported
         checkpoint_path: str = "checkpoints/epoch_{}.pth",
         temp_path: str= "./temp/",
         logger: Logger | None = None,#mlflow logger
         track_log_freq: int| str = 'batch',#tensorboard logger
-        acc_freq:int =1,#metrics logging frequency
+        acc_freq:int =1,#accuracy logging frequency
         random_seed: int | None = 42,
         name: str | None = None,
         validation_every: int = 0,
@@ -114,7 +114,7 @@ class GlitchTrainer(TorchTrainer):
         self.coptim_betas=tuple(coptim_betas)
         self.output_channels=output_channels
         self.num_epochs = num_epochs
-        self.acc_freq=acc_freq
+        self.acc_freq=acc_freq 
         self.checkpoints_location = checkpoint_path
         os.makedirs(os.path.dirname(checkpoint_path), exist_ok=True)
         self.temp_path=temp_path
@@ -220,7 +220,7 @@ class GlitchTrainer(TorchTrainer):
         # Set log level to debugging
         debugger.setLevel(logging.DEBUG)
         
-        train_loss_plot, val_loss_plot=train_decoder(
+        train_loss_plot, val_loss_plot,denoise_acc,veto_acc=train_decoder(
             self.num_epochs,
             self.generator_2d,
             self.loss,
@@ -246,25 +246,21 @@ class GlitchTrainer(TorchTrainer):
         #Model signature
         #example_batch = next(iter(self.dataloader))
         #input_example=example_batch[0:2,].numpy()
+        
+        logstep=0
+        for train_loss1, val_loss1 in zip(train_loss_plot,val_loss_plot):
+                        self.log(item=train_loss1,identifier='Training loss',kind='metric',step=logstep)
+                        self.log(item=val_loss1,identifier='Validation loss',kind='metric',step=logstep)
+                        logstep+=1
+                        
+        
+        logstep=0
+        for denoise_acc1, veto_acc1 in zip(denoise_acc,veto_acc):                
+                        self.log(item=denoise_acc1,identifier='Denoising accuracy',kind='metric',step=logstep)
+                        self.log(item=veto_acc1,identifier='Veto Accuracy',kind='metric',step=logstep)
+                        logstep+=1                  
+                                          
 
-        fig,ax=plt.subplots()
-        ax.plot(train_loss_plot,color='b',label='train')
-        ax.plot(val_loss_plot,color='r',label='validation')
-        ax.set_xlim(left=0)
-        ax.set_title('L1 loss')
-        ax.legend()
-        imgname=f'{self.save_name}_Loss.png'
-        
-        
-        
-        self.log(
-                            item=fig,
-                            identifier=imgname,
-                            kind='figure'
-                        )
-        
-        
-        
         self.log(
                             item=self.generator_2d,
                             identifier='trained_model',
