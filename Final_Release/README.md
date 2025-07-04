@@ -8,7 +8,7 @@
     * [ANNALISA module](#annalisa-module)
     * [Glitchflow module](#glitchflow-module)
     * [Pipeline execution](#pipeline-execution)
-    * [Logging](#logging)
+    * [Data Visualization and Logging](#data-visualization-and-logging)
  
 # DT Virgo Use Case
 
@@ -160,30 +160,56 @@ For example, the preprocessing pipeline:
 
 >itwinai exec-pipeline +pipe_key=preproc_pipeline 
 
-will execute the following steps, (see [config.yaml](https://github.com/interTwin-eu/DT-Virgo-dags/blob/main/Final_Release/config.yaml)):
+will execute the following steps:
 
 - Data-processor the data preprocessing step 
 - Annalisa-scan: the channel selection algorithm
 - QT-dataset: the spectrogram dataset creation  
 
-If however the user wants to perform a second channel selection and spectrogram dataset creation using different parameters (modifying the relative config files scan.yaml for Annalisa-scan and process.yaml and whiten.yaml for QT-dataset ) on an already preprocessed dataset they can run:
+If however the user wants to perform a second channel selection and spectrogram dataset creation using different parameters (modifying the relative configuration files scan.yaml for Annalisa-scan and process.yaml and whiten.yaml for QT-dataset ) on an already preprocessed dataset they can run:
 
 > itwinai exec-pipeline +pipe_key=preproc_pipeline +pipe_steps=[Annalisa-scan,QT-dataset]
 
-## Logging
+## Data Visualization and Logging
+The DT uses MLFlow and TensorBoard for logging thanks to itwinai integration. For installation, refer to the official documentation (see [Requirements](#requirements)). <br>
+In case of a local setup, the python installation should be enough.
 
 ### MLFlow
 
-The application uses MLFlow and TensorBoard for logging. For installation refers to the official documentation. <br>
-In case of a local setup the python installation should be enough. To launch MLFlow:
+To launch MLFlow:
 
 > mlflow server --backend-store-uri sqlite:///mlflow.db --default-artifact-root ./artifacts --host ip adress --port 5005
 
-- --backend-store-uri: the database that will be used to store data. sqlite is the default db but other databases can  be used.
-- --default-artifact-root: MLFlow directory where data will be stored. Logged model will be found here
-- --host: the ip adress of the server. Put it to 0.0.0.0 if you work behind a proxy.
+- --backend-store-uri: the database that will be used to store data. sqlite is the default db but other databases can be used.
+- --default-artifact-root: MLFlow directory where data will be stored. Logged model will be found here.
+- --host: the ip adress of the server. Put it to 0.0.0.0 if working behind a proxy.
 - --port: 5005 is the default port.
 
+User can launch MLFlow and navigate through different experiments and runs, allowing for detailed display of:
+-  Model weights
+-  Training and validation loss
+-  Accuracy metrics for both denosing and vetoing task
+
+Examples are reported in the figures below:
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/52a24031-5b0c-4919-8e77-ff93118c6672" alt="Metrics Dashboard">
+  <br>
+  Figure 3: Overview of training and validation loss, model accuracy.
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/494063a7-cd51-4b62-bd2e-23f545ee74ce" alt="Models Overview">
+  <br>
+  Figure 4: Summary of available models.
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/bf8fd17b-76ab-45d4-9181-2002445cf4c4" alt="Runs Log">
+  <br>
+  Figure 5: Log of recent training and evaluation runs for each experiment.
+</p>
+
+  
 ### TensorBoard
 
 To launch TensorBoard:
@@ -191,7 +217,7 @@ To launch TensorBoard:
 > tensorboard --logdir logdir --host ip --port 6000
 
 - --logdir: tensorboard root directory.
-- --host: the ip adress of the server. Put it to 0.0.0.0 if you work behind a proxy.
+- --host: the ip adress of the server. Put it to 0.0.0.0 if working behind a proxy.
 - --port: 6000 is the default port.
 
 User can launch TensorBoard and navigate through the logged events, which are categorized by run and timestamp, allowing for detailed visualization and analysis of the inference results comprising of:
@@ -205,26 +231,26 @@ Examples are reported in the figures below:
 <p align="center">
   <img src="https://github.com/user-attachments/assets/13b645f5-1ce8-415d-8eb0-f9ca45d70eeb" alt="Training accuracy">
   <br>
-  Figure 3: Training accuracy as a function of learning epochs for different values for fixed $SNR^2$ threshold.
+  Figure 6: Training accuracy as a function of learning epochs for different values for fixed $SNR^2$ threshold.
 </p>
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/a7d37a27-4f58-47a3-8635-7ee422c29b1f" alt="Denoising inference">
   <br>
-  Figure 4: On the left: Denoising inference. Real, generated spectrograms of data used for inference and their absolute difference.
+  Figure 7: On the left: Denoising inference. Real, generated spectrograms of data used for inference and their absolute difference.
 On the center and right: Denoising and vetoing accuracy as a function of different $SNR^2$ threshold after training.
 </p>
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/ed0d994e-0903-48de-ab5e-cdee1978ad77" alt="Training loss">
   <br>
-  Figure 5: Training and validation loss as a funciton of learning epochs.
+  Figure 8: Training and validation loss as a funciton of learning epochs.
 </p>
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/884447df-25b0-41bc-8fb7-4f616e670581" alt="Veto metadata">
   <br>
-  Figure 6: Denoising metadata. In the table are reported the gps time of the data used for inference, a binary flag to indicate if the data was succesfully cleaned, the maximum $SNR^2$ for uncleaned data, and the area (in pixels) of residual glitch after (failed) cleaning.
+  Figure 9: Denoising metadata. In the table are reported the gps time of the data used for inference, a binary flag to indicate if the data was succesfully cleaned, the maximum $SNR^2$ for uncleaned data, and the area (in pixels) of residual glitch after (failed) cleaning.
 </p>
 
 
