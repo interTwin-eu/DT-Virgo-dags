@@ -303,7 +303,7 @@ class GlitchInference (Predictor):
             table_md += f"| {idstep} |{id_value} | {'Yes' if bool_value else 'No'} | {snr2_val: .1f} | { 0 if bool_value else pix_val.item() } |\n"
             idstep+=1
         
-        tracking_logger.log(table_md,f'Cleaned Batch Threshold SNR^2{self.snr2_threshold}',kind="text")
+        tracking_logger.log(table_md,f'Cleaned Batch Threshold SNR^2 {self.snr2_threshold}',kind="text")
         
         selected_gps = [sublist for sublist, mask in zip(gps, cluster_mask) if  mask]
         
@@ -315,11 +315,11 @@ class GlitchInference (Predictor):
         
         selected_test=test[cluster_mask]
         
-        print(selected_test.shape)
+        
         
         
         selected_gen=generated_test[cluster_mask]
-        print(selected_gen.shape)
+        
         
         
         plot_images(selected_gen, selected_test, channel_means, self.tensorboard_root+self.trun_name,tracking_logger
