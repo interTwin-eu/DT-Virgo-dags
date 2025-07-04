@@ -246,6 +246,22 @@ class GlitchTrainer(TorchTrainer):
         #Model signature
         #example_batch = next(iter(self.dataloader))
         #input_example=example_batch[0:2,].numpy()
+
+        fig,ax=plt.subplots()
+        ax.plot(train_loss_plot,color='b',label='train')
+        ax.plot(val_loss_plot,color='r',label='validation')
+        ax.set_xlim(left=0)
+        ax.set_title('L1 loss')
+        ax.legend()
+        imgname=f'{self.save_name}_Loss.png'
+        
+        
+        
+        self.log(
+                            item=fig,
+                            identifier=imgname,
+                            kind='figure'
+                        )
         
         
         
