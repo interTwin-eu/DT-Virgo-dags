@@ -12,8 +12,8 @@ import h5py as h5
 from os import listdir
 from gwpy.timeseries import TimeSeries
 from gwpy.signal import filter_design
-from scipy.signal import sosfilt_zi
-import torchaudio.functional as fn
+
+
 from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
 import math
@@ -26,6 +26,17 @@ class TFrame:
     
     def __init__(self,data,rows,cols,gps,anns):
         
+        """
+        Class for adding metadata to a tensor
+        
+        data(torch.tensor): Tensor containing the dataset
+        rows(list): metadata for first dimension
+        cols(list): metadata for second dimension
+        gps(list): id's for first dimension
+        anns(dictionary): dictionary for adding other fields
+        
+        """
+        
         self.tdata=data 
         self.row_list=rows
         self.col_list=cols
@@ -35,19 +46,28 @@ class TFrame:
         self.ann_dict=anns
         #"sample_rate"
         
-    def thead(self):
-        
-        df = pd.DataFrame(self.tdata[:5,:,0].numpy(), index=self.row_list[:5], columns=self.col_list)
-        
-        return df
+    
     
     def save(self,path):
+        """
+        Saves TFrame on disk as a dictionary
+        
+        path(str): where to save data
+        
+        """
         
         frame={'data':self.tdata,'rows':self.row_list,'cols':self.col_list,'gps':self.gps,'ann':self.ann_dict}
         
         torch.save(frame,path)
         
     def load(self,path,safeload=True):
+        """
+        loads TFrame from disk 
+        
+        path(str): path on disk
+        safeload(Bool): enable torch safe load
+        
+        """
         
         output=torch.load(path,weights_only=safeload)
         
@@ -67,6 +87,13 @@ class TFrame:
         
     
     def addmeta(self,key,annotation):
+        """
+        Adds a field to the TFrame dictionary
+        
+        key: dictionary key
+        annotation: dictionary data
+        
+        """
         
         self.ann_dict.update({key: annotation})
         
@@ -135,6 +162,22 @@ def merge_tframes(tf_list):
     tf_stack=TFrame(dfm,new_rows,new_cols,new_rows,{"sample_rate":tf_list[0].ann_dict['sample_rate']})
     
     return tf_stack
+
+
+def whiten_(entry):
+    '''
+    Whitens a TimeSeries entry
+    Parameters:
+    entry: TimeSeries
+        The time series entry to be resampled.
+    
+    Returns: TimeSeries
+        The whitened timeseries
+    '''
+    norm=abs(entry.value).max()
+    
+    
+    return ((entry /norm ).whiten())*norm
 
 
 def construct_dataframe(path,channel_list=None ,target_channel='V1:Hrec_hoft_16384Hz',n1_events=None, n2_events=None,n1_channels=None,
@@ -242,6 +285,7 @@ def construct_dataframe(path,channel_list=None ,target_channel='V1:Hrec_hoft_163
                 
 
                 # we need to filter AFTER the whitening
+                
                 tmsrs = tmsrs.filter(bp, filtfilt=True)
                 
 
@@ -269,8 +313,9 @@ def construct_dataframe(path,channel_list=None ,target_channel='V1:Hrec_hoft_163
 
                         if whiten:
 #                            tmsrs=tmsrs.whiten()
-                            tmsrs=whiten_(tmsrs) 
-
+                            tmsrs=whiten_(tmsrs)
+    
+                        
                         tmsrs = tmsrs.filter(bp, filtfilt=True)
                  
                         if sr:
@@ -401,6 +446,13 @@ def save_to_json(data, filename, folder="."):
 #---------Wrapper-----------------------------------------------------------------------------------
 
 class YamlWrapper:
+    """
+    Wrapper for a Yaml file
+    
+    fname: file name
+    path: path on disk
+    """
+    
     def __init__(self, fname:str,path:str='./conf/') -> None:
         self.fpath=path+fname
         self.flist=None
@@ -414,7 +466,16 @@ class YamlWrapper:
             
             
 def saveYaml(path,name,struct):
+    """
+    Utility for saving a Yaml file
     
+    path(str): where to save file
+    name(str): file name
+    struct(dictionary): dictionary rapresenting the yaml file
+    
+    returns an error python class or None for a successful write
+    
+    """
     
    
     
@@ -460,6 +521,11 @@ def augment_data(tensor, num_slices):
 
 def augment_dataset(train_data,test_data):
     
+    """
+    Dataset augmentation
+    
+    """
+    
     # Augment training data (3 slices)
     train_data_augmented_3 = augment_data(train_data, 3)
 
@@ -480,6 +546,13 @@ def augment_dataset(train_data,test_data):
 
 def augment_list(list0,n_ext=5):
     
+    """
+    List augmentation
+    
+    n_ext: number of copies for each member of the list
+    
+    """
+    
     ltemp=[]
     
     for elm in list0:
@@ -491,31 +564,7 @@ def augment_list(list0,n_ext=5):
     
     
 
-"""
-def filter_rows_below_threshold(data, threshold):
-    
-    Filters rows in the data tensor where all channels are below a certain threshold.
 
-    Input:
-    - data (torch.Tensor): dataset
-    - threshold (torch.Tensor): threshold value for each channel
-
-    Return:
-    - filtered_data (torch.Tensor): filtered dataset
-    
-    # Calculate the maximum value for each channel across all examples
-    max_vals = data.view(data.shape[0], data.shape[1], -1).max(-1)[0]
-    #print(max_vals.shape)
-    #print(threshold.unsqueeze(0).shape)
-    # Check if all three values in each row are below the respective threshold
-    mask = (max_vals < threshold.unsqueeze(0)).all(dim=1)
-    #print(mask.shape)
-    
-    # Use the boolean mask to filter and keep only the rows in the dataset that satisfy the condition
-    filtered_data = data[mask]
-
-    return filtered_data,mask
-"""
 
 def filter_rows_below_threshold(data, threshold):
     """
@@ -562,6 +611,16 @@ def filter_rows_above_threshold(data, threshold):
     return filtered_data,mask.tolist()
 
 def gen_mask(strain_thr,n_chan,aux_thr):
+    """
+    
+    Utility for generating a mask for dataset filtering
+    
+    
+    strain_thr(int): threshold on strain channel
+    n_chan(int): number of channels
+    aux_thr(int): threshold on auxiliary channels
+    
+    """
     
     mask=[]
     
@@ -601,7 +660,7 @@ def find_max(data):
 
 def normalize_ch_mean(data, channel_means, channel_std=None):
     
-    #MODIFY WITH MEDIAN
+    
     """
     Normalizes the data by dividing each channel by its respective mean value,
     or by subtracting the mean and dividing by the standard deviation if channel_std is provided.
@@ -751,7 +810,7 @@ def plot_accuracies(cluster_abs_diff_accuracies, clusters_generated_accuracies,r
         plt.figure(figsize=(10, 6))  # Adjust figure size for better visualization
 
         plt.plot(thresholds, cluster_abs_diff_accuracies, label="Denoising Accuracy", marker='o', linestyle='-')
-        plt.plot(thresholds[5:], clusters_generated_accuracies[5:], label="Vetoing Accuracy", marker='x', linestyle='--')
+        plt.plot(thresholds[:], clusters_generated_accuracies[:], label="Vetoing Accuracy", marker='x', linestyle='--')
         #plt.plot(thresholds, cluster_abs_diff_accuracies_veto, label="Vetoing Accuracy for veto correctly flagged data", marker='p', linestyle='--')
 
         plt.xlabel(r"$\mathrm{SNR^2}$ Threshold", fontsize=20)
@@ -913,7 +972,7 @@ def plot_stacked_tensor(tensor_to_plot, column_list, f_range, desired_ticks, log
         for j, aux_img in enumerate(aux_images):
             ax = axes[j + 1]
             im = ax.imshow(aux_img, aspect='auto', vmin=v_min, vmax=v_max)
-            ax.set_title(selected_elements[j+1])  # Use corresponding column name
+            ax.set_title(column_list[j+1])  # Use corresponding column name
             ax.set_xlabel('Time (s)')
             ax.set_ylabel('Frequency (Hz)')
             fig.colorbar(im, ax=ax)
@@ -922,10 +981,7 @@ def plot_stacked_tensor(tensor_to_plot, column_list, f_range, desired_ticks, log
             xlabellist=[i for i in range(aux_img.shape[-1]//100+1)]
             xtickslist=list(map(lambda x: x * 100, xlabellist))
             xtickslist[-1]=-1
-            #axes[0].set_xticks(xtickslist)
-            #axes[0].set_xticklabels(xlabellist)
-            #ax.set_xticks([0, aux_img.shape[1]//6,2*aux_img.shape[1]//6, aux_img.shape[1] // 2,2*aux_img.shape[1]//3,5*aux_img.shape[1]//6,   aux_img.shape[1] - 1])
-            #ax.set_xticklabels([0,1,2, 3,4,5, 6]) # adjust time labels based on your time range.
+            
             ax.set_xticks([k* aux_img.shape[1]//length_in_s for k in range(length_in_s+1)])
             ax.set_xticklabels([k for k in range(length_in_s+1)])
             

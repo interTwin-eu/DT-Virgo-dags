@@ -1,6 +1,6 @@
 import torch
 from torch.utils.data import DataLoader
-import torch.nn as nn
+
 if torch.cuda.is_available():
     device = 'cuda'
     
@@ -9,7 +9,7 @@ else:
 
 
 import numpy as np
-import mlflow
+
 from skimage.measure import label
 from tqdm import tqdm
 from typing import  Optional, List
@@ -24,7 +24,7 @@ from .Model import calculate_iou_2d_non0,generate_data,MeanAbsDiff,StdAbsDiff,ca
 from .Data import plot_spectrogram, plot_images,plot_accuracies,plot_cleaned_data,save_tensor
 
 import matplotlib.pyplot as plt
-import os
+
 
 
 
@@ -35,20 +35,20 @@ class GlitchInference (Predictor):
     
     def __init__(self, 
                  batch_size:int=2,
-                 shuffle:bool='False',
+                 
                  inference_path:str='./temp/',#path for saving data 
                  n_samp_rows:int=11,# number of saved data
                  logger: Logger | None = None,#mlflow logger
                  tensorboard_root:str='/home/jovyan/runs/',#tensorboard root directory
                  trun_name:str='INF/',#tensorboard tag
                  track_log_freq: int| str = 'batch'#logging frequency
-                 ,ndebug: int=20,# number of uncleaned data logged
+                 ,ndebug: int=20,# number of cleaned data logged
                  snr2_threshold: int=16) -> None:# snr^2 threshold for cleaned data
         
         
         self.logger=logger
         self.batch_size=batch_size
-        self.shuffle=shuffle
+        
         self.res_root=inference_path
         self.n_samp_rows=n_samp_rows
         
@@ -193,6 +193,7 @@ class GlitchInference (Predictor):
         model_name=datalist[5]
        
         generator_2d=datalist[3].to(device)#model to gpu
+        generator_2d.eval()
         num_aux_channels=test.shape[1]-1
         
         traintms=str(datetime.datetime.now())
@@ -202,20 +203,22 @@ class GlitchInference (Predictor):
         
         self.logger.create_logger_context()
         tracking_logger.create_logger_context()
-        print('Background','\n')
+        print('Test')
+        print(test.shape)
+        print('Background')
         print(background.shape)
         
         
         test_dataloader = DataLoader(
            test,
            batch_size=self.batch_size,
-           shuffle=self.shuffle,
+           shuffle=False,
         )
         
         test_background_dataloader = DataLoader(
            background,
            batch_size=self.batch_size,
-           shuffle=self.shuffle,
+           shuffle=False,
         )
         
         
@@ -228,12 +231,11 @@ class GlitchInference (Predictor):
         print('generated ',generated_post.shape)    
             
             
-        #print('batch ',batch.shape)    
-        #torch.save(batch,'./temp/batch.pt')   
+        
         
             
-        qplt_g=generated_post[0,0].detach().cpu().numpy()
-        qplt_r=batch[0,0].detach().cpu().numpy()
+        #qplt_g=generated_post[0,0].detach().cpu().numpy()
+        #qplt_r=batch[0,0].detach().cpu().numpy()
         
         metric_mean=MeanAbsDiff()
         metric_std=StdAbsDiff()
@@ -271,16 +273,14 @@ class GlitchInference (Predictor):
         
         diff=torch.abs(generated_test-test[:,0,:,:].unsqueeze(1))
         
-        npix=torch.sum(diff, dim=(2, 3)) #add mask
+        
         
     
         abs_difference_test=diff*norm_factor
         
         
         
-        cluster_test = ClusterAboveThreshold(16, 1).to('cpu')
         
-        clusters_abs_test = cluster_test(abs_difference_test)
         
         npix=(abs_difference_test>self.snr2_threshold).sum(dim=(-2,-1))
         
@@ -307,7 +307,7 @@ class GlitchInference (Predictor):
         
         selected_gps = [sublist for sublist, mask in zip(gps, cluster_mask) if  mask]
         
-        print(len(selected_gps))
+       
         
         cluster_mask=torch.tensor(cluster_mask)
         
@@ -334,12 +334,12 @@ class GlitchInference (Predictor):
         
         generated_tensor_pre = torch.tensor([]).to('cpu')  # Initialize an empty tensor
         for batch in tqdm(test_dataloader):
-            generated_post = generate_data(generator_2d, batch.detach().cpu()).to('cpu')
+            generated_post = generate_data(generator_2d, batch)
             generated_tensor_pre = torch.cat((generated_tensor_pre, generated_post), dim=0)
             
         background_tensor = torch.tensor([]).to('cpu')  # Initialize an empty tensor
         for batch in tqdm(test_background_dataloader):
-            background_post = generate_data(generator_2d, batch.detach().cpu()).to('cpu')
+            background_post = generate_data(generator_2d, batch)
             background_tensor = torch.cat((background_tensor, background_post), dim=0)
             
         generated_tensor=torch.cat((generated_tensor_pre,background_tensor), dim=0)    
@@ -384,11 +384,11 @@ class Glitchflow (Predictor):
     
     def __init__(self,
                  batch_size:int=2,
-                 shuffle:bool='False',
+                 shuffle:bool=False,
                  inference_path:str='./temp/',
                  save_path:str='./temp',
                  fname:str='glitch_generated',
-                  logger: Logger | None = None) -> None:
+                 ) -> int:
         
         
         self.batch_size=batch_size
@@ -396,7 +396,7 @@ class Glitchflow (Predictor):
         self.res_root=inference_path
         self.save_path=save_path
         self.fname=fname
-        self.logger=logger
+        
         
         
         
@@ -418,7 +418,7 @@ class Glitchflow (Predictor):
        
         #generator_2d=datalist[3].to(device)
         
-        self.logger.create_logger_context()
+       
         
         generator_2d=datalist[3]
         
@@ -426,6 +426,7 @@ class Glitchflow (Predictor):
         
         
         generator_2d.to(device)
+        generator_2d.eval()
         
         num_aux_channels=test.shape[1]-1
         
@@ -450,12 +451,12 @@ class Glitchflow (Predictor):
         
         generated_tensor_pre = torch.tensor([]).to('cpu')  # Initialize an empty tensor
         for batch in tqdm(test_dataloader):
-            generated_post = generate_data(generator_2d, batch.detach().cpu()).to('cpu')
+            generated_post = generate_data(generator_2d, batch)
             generated_tensor_pre = torch.cat((generated_tensor_pre, generated_post), dim=0)
             
         background_tensor = torch.tensor([]).to('cpu')  # Initialize an empty tensor
         for batch in tqdm(test_background_dataloader):
-            background_post = generate_data(generator_2d, batch.detach().cpu()).to('cpu')
+            background_post = generate_data(generator_2d, batch)
             background_tensor = torch.cat((background_tensor, background_post), dim=0)
             
         generated_tensor=torch.cat((generated_tensor_pre,background_tensor), dim=0) 
