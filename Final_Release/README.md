@@ -58,6 +58,7 @@ The following shows how to set up and run the Virgo DT pipeline.
 - torchaudio==2.4.1
 - torchvision==0.19.1
 - torchmetrics==1.6.2
+- torchinfo==1.8.0
 - gwpy==3.0.12
 - h5py==3.13.0
 - numpy==1.26.4
